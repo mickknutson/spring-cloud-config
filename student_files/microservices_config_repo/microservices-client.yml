@@ -1,0 +1,13 @@
+# Default Profile YAML Property for:
+# microservices-client
+
+name: Mick Knutson (v.1.1)
+message: Welcome to default YAML properties
+config:
+  client:
+    message: Some Default YAML Message
+    credentials:
+      provider: LDAP
+      username: admin2
+      password: changeme
+      clients: 2

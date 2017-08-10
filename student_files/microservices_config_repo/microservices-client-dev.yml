@@ -1,0 +1,13 @@
+# Dev Profile YAML Property for:
+# microservices-client-dev
+
+name: Mick Knutson (v.2.1)
+message: Welcome to dev YAML properties
+config:
+  client:
+    message: Some Dev YAML Message
+    credentials:
+      provider: CAS3
+      username: admin4
+      password: changeme
+      clients: 4

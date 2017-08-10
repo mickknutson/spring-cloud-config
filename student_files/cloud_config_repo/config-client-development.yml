@@ -1,0 +1,11 @@
+user:
+  role: YAML Developer
+message: Welcome to YAML developer properties
+name: Mick Knutson (v.1.1)
+config.client:
+  message: Some Message
+  credentials:
+    provider: Eureka
+    username: admin1
+    password: changeme
+    clients: 5
