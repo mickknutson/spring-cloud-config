@@ -1,0 +1,24 @@
+# Tomcat Port:
+server:
+  port: 8888
+
+# Config Repo:
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: file:///${HOME}/microservices_config_repo
+
+        # Allow for remote overrides
+#        overrides:
+#          config.client.credentials.servers: localhost
+
+# Show sensitive information for endpoints:
+endpoints:
+  sensitive: true
+
+# Disable security for endpoints:
+management:
+  security:
+    enabled: false

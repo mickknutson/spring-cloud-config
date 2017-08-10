@@ -1,0 +1,30 @@
+#------------------------------------------------------------------------------#
+# Application Properties #
+# inside ./src/main/resources/application.yml
+#------------------------------------------------------------------------------#
+# Turn on debug logging to show ConditionEvaluationReport :
+debug: false
+
+# Tomcat Server Port:
+server:
+  port: 8888
+
+management:
+  security:
+    enabled: false
+
+
+
+## LAB: Configure Cloud Server Properties
+
+
+
+
+
+## LAB: Create BASIC-Authentication credentials
+
+
+
+
+
+#------------------------------------------------------------------------------#

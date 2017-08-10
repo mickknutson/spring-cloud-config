@@ -1,0 +1,26 @@
+#-----------------------------------------------------------------------------#
+# BOOTstrap Properties #
+# inside ./src/main/resources/bootstrap.yml
+#-----------------------------------------------------------------------------#
+
+## LAB: Add configuration server information:
+spring:
+  cloud:
+    config:
+      #BASIC Auth:
+      #uri: http://user1:s3cr3t@localhost:8888
+      uri: http://localhost:8888
+      #Defaults to Master
+      #label: new_branch
+      label: Master
+      #failFast: true
+
+## LAB: Add configuration Client information:
+# (note the two spaces in front of "application" and "profile")
+spring.application:
+    name: config-client
+    
+spring.profiles:
+    active: development
+
+#-----------------------------------------------------------------------------#

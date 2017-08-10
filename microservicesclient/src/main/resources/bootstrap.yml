@@ -1,0 +1,27 @@
+# Bootstrap properties
+
+# git: microservices-client.properties / yml
+spring:
+  application:
+    name: microservices-client
+
+# git: microservices-client-dev.properties / yml
+  profiles:
+    active: dev
+
+  cloud:
+    config:
+      uri: http://localhost:8888
+      failFast: true
+      retry:
+        max-attempts: 3
+        initial-interval: 1500
+        max-interval: 2500
+        multiplier: 2.5
+
+      # Can be branch or tag:
+#      label: ${CLIENT_CONFIG_LABEL:v.2.0}
+
+spring.cloud.config.allowOverride: true
+#spring.cloud.config.overrideNone: true
+spring.cloud.config.overrideSystemProperties: false
