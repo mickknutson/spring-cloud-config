@@ -12,6 +12,9 @@ spring:
   cloud:
     config:
       uri: http://localhost:8888
+      username: user1
+      password: changeme
+
       failFast: true
       retry:
         max-attempts: 3
@@ -22,6 +25,3 @@ spring:
       # Can be branch or tag:
 #      label: ${CLIENT_CONFIG_LABEL:v.2.0}
 
-spring.cloud.config.allowOverride: true
-#spring.cloud.config.overrideNone: true
-spring.cloud.config.overrideSystemProperties: false

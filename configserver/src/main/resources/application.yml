@@ -10,15 +10,17 @@ spring:
         git:
           uri: file:///${HOME}/microservices_config_repo
 
-        # Allow for remote overrides
-#        overrides:
-#          config.client.credentials.servers: localhost
-
 # Show sensitive information for endpoints:
 endpoints:
   sensitive: true
 
-# Disable security for endpoints:
+# Security for endpoints:
 management:
   security:
-    enabled: false
+    enabled: true
+
+security:
+  user:
+    name: user1
+    password: changeme
+

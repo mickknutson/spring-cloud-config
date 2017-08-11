@@ -21,7 +21,7 @@ public class ConfigserverApplication {
 		SpringApplication.run(ConfigserverApplication.class, args);
 	}
 
-    @Bean @Order(Ordered.HIGHEST_PRECEDENCE)
+    /*@Bean @Order(Ordered.HIGHEST_PRECEDENCE)
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
@@ -45,10 +45,10 @@ public class ConfigserverApplication {
                 registry.addMapping("/**")
                         .allowedHeaders("*")
                         .allowedMethods("GET", "PUT", "POST")
-                        .allowedOrigins("*")
+                        .allowedOrigins("http://localhost:8888")
                 ;
             }
         };
-    }
+    }*/
 
 }

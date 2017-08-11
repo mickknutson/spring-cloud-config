@@ -42,5 +42,4 @@ public class MicroservicesClientProperties {
 		return "MicroservicesClientProperties [message=" + message + ", credentials=\n" + credentials + "]";
 	}
 
-
 }
