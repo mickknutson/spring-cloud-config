@@ -21,16 +21,30 @@ repositories {
 	mavenCentral()
 }
 
-
 ext {
 	springCloudVersion = 'Dalston.SR2'
 }
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-actuator')
-	compile('org.springframework.cloud:spring-cloud-config-server')
-	runtime('org.springframework.boot:spring-boot-devtools')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+
+    // Security:
+    compile('org.springframework.boot:spring-boot-starter-security')
+    testCompile('org.springframework.security:spring-security-test')
+
+    // Config Server
+    compile('org.springframework.cloud:spring-cloud-config-server')
+
+    // Tools
+    compile('org.springframework.boot:spring-boot-starter-logging')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('org.springframework.boot:spring-boot-actuator-docs')
+    runtime('org.springframework.boot:spring-boot-devtools')
+    compile('org.springframework.boot:spring-boot-configuration-processor')
+
+
+    // Testing
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+
 }
 
 dependencyManagement {

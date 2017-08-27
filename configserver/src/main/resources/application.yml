@@ -17,9 +17,12 @@ endpoints:
 # Security for endpoints:
 management:
   security:
-    enabled: true
+    enabled: false
 
+# Enable BASIC Authentication:
 security:
+  basic:
+    enabled: true
   user:
     name: user1
     password: changeme

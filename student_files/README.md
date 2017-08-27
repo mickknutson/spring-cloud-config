@@ -4,7 +4,7 @@ This contains details for the solutions code, lab code, and git repositories.
 
 ### Spring Cloud Config Course ###
 
-* [Udemy](https://udemy.com/user/mickknutson/)
+* [Udemy Course](https://udemy.com/user/mickknutson/)
 
 This code has been developed in Maven
 

@@ -3,6 +3,8 @@ package com.baselogic.cloud.configserver;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.cloud.config.server.EnableConfigServer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -20,13 +22,27 @@ import java.util.Arrays;
 
 @SpringBootApplication
 @EnableConfigServer
-//@Slf4j
 public class ConfigserverApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ConfigserverApplication.class, args);
 	}
 
+    @Bean
+    public FilterRegistrationBean corsFilterRegistration() {
+        FilterRegistrationBean registrationBean =
+                new FilterRegistrationBean(new CORSFilter());
+        registrationBean.setName("CORS Filter");
+        registrationBean.addUrlPatterns("/*");
+        registrationBean.setOrder(1);
+        return registrationBean;
+    }
+
+    /**
+     * Print out all beans in context if 'trace' profile is enabled
+     * @param ctx
+     * @return
+     */
     @Profile("trace")
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
@@ -42,4 +58,5 @@ public class ConfigserverApplication {
             System.out.println("*** the End ********************************\n");
         };
     }
-}
+
+} // The End...

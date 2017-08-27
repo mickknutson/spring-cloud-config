@@ -1,0 +1,68 @@
+<!--
+To access from this application:
+
+http://localhost:8888/AjaxTest.html
+-->
+<html>
+<head>
+  <!--<script type="application/javascript"  src="http://cdn.jsdelivr.net/webjars/jquery/3.1.1-1/jquery.min.js"></script>-->
+  <script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3/dist/jquery.min.js"></script>
+    <style>
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+    </style>
+    <script type="application/javascript">
+        $(document).ready(function(){
+            $.ajax({
+                url: "http://localhost:8888/microservices-client/default",
+                type : "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                processData:true,
+                crossDomain:true,
+                crossOrigin:true,
+
+                beforeSend: function (xhr) {
+                  // Do not use BASIC Authentication
+                  //xhr.setRequestHeader ("Authorization", "Basic " + btoa("user1:changeme"));
+                },
+                error: function(xhr, status, errorThrown) {
+                  alert(status, errorThrown);
+                    // Error block
+                    console.log("xhr: " + xhr);
+                    console.log("status: " + status);
+                    console.log("errorThrown: " + errorThrown);
+                }
+            })
+            .then(function(data, status, xhr) {
+               //alert(JSON.stringify(data));
+               console.log("xhr: " + xhr);
+               console.log("status: " + status);
+               console.log("data: "+ data);
+
+                $('.name').append(data.name);
+
+                var items = [];
+                $.each( data.propertySources, function( key, val ) {
+                    items.push(
+                      "<table><tr><th>PropertySource file name</th>"+
+                      "<th>"+val.name+"</th>"+
+                      "</tr><tr><td colspan='2'>"+
+                      JSON.stringify(val.source, null, '\t')
+                      +"</td></tr></table>\n\t<br/><br/>");
+                });
+                $('.result').append(items);
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Spring Cloud Config Ajax Test (no BASIC Authentication)</h1>
+    <div id = 'cloudConfigFeed'>
+        <p class="name">Application Configuration Returned: </p>
+        <p class="result"></p>
+    </div>
+</body>
+</html>
