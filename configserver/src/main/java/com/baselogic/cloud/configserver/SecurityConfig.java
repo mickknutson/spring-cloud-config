@@ -12,10 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity//(debug = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final Logger logger = LoggerFactory
-            .getLogger(SecurityConfig.class);
-
-    /*@Override
+    @Override
     protected void configure(final HttpSecurity http) throws Exception {
 
         // Allow AJAX preflight requests via HttpMethod.OPTIONS to be made without
@@ -23,6 +20,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 
-    }*/
+    }
 
 } // The End...

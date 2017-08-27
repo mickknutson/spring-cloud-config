@@ -14,6 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * CORS Filter
  *
+ * This filter is an implementation of W3C's CORS
+ * (Cross-Origin Resource Sharing) specification,
+ * which is a mechanism that enables cross-origin requests.
+ *
  * Special notes for <b>Access-Control-Allow-Credentials</b>:
  * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
  *
@@ -32,18 +36,14 @@ public class CORSFilter extends GenericFilterBean implements Filter {
 //        httpResponse.setHeader("Access-Control-Allow-Headers", "*");
         httpResponse.setHeader("Access-Control-Allow-Headers",
                 "Origin, X-Requested-With, Content-Type, Accept, X-Auth-Token, X-Csrf-Token, WWW-Authenticate, Authorization");
-        httpResponse.setHeader("Access-Control-Expose-Headers", "xsrf-token, custom-token1, custom-token2");
-        httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+        httpResponse.setHeader("Access-Control-Expose-Headers", "custom-token1, custom-token2");
+        httpResponse.setHeader("Access-Control-Allow-Credentials", "false");
         httpResponse.setHeader("Access-Control-Max-Age", "3600");
 
         System.out.println("********** CORS Configuration Completed **********");
 
         chain.doFilter(request, response);
     }
-
-//    @Override
-//    public void init(FilterConfig filterConfig) throws ServletException {
-//    }
 
     @Override
     public void destroy() {
