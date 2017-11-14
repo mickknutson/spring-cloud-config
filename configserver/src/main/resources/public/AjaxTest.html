@@ -5,8 +5,11 @@ http://localhost:8888/AjaxTest.html
 -->
 <html>
 <head>
-  <!--<script type="application/javascript"  src="http://cdn.jsdelivr.net/webjars/jquery/3.1.1-1/jquery.min.js"></script>-->
-  <script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3/dist/jquery.min.js"></script>
+    <!--<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"/>-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+          crossorigin="anonymous">
     <style>
       table, th, td {
         border: 1px solid black;
@@ -16,7 +19,12 @@ http://localhost:8888/AjaxTest.html
     <script type="application/javascript">
         $(document).ready(function(){
             $.ajax({
+
+                // url: "http://localhost:8888/microservices-client/",
                 url: "http://localhost:8888/microservices-client/default",
+                // url: "http://localhost:8888/microservices-client/dev/v.3.0",
+                // url: "http://localhost:8888/microservices-client/dev/HOTFIX",
+
                 type : "GET",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
@@ -34,6 +42,11 @@ http://localhost:8888/AjaxTest.html
                     console.log("xhr: " + xhr);
                     console.log("status: " + status);
                     console.log("errorThrown: " + errorThrown);
+                    $('.result').append(
+                        '<div class="alert alert-danger">'+
+                        '<strong>Failure! </strong> status: '+status+', errorThrown: '+errorThrown+'</div>'
+                    );
+
                 }
             })
             .then(function(data, status, xhr) {

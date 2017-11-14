@@ -1,0 +1,54 @@
+/**
+ * Code Coverage Configuration
+ *
+ * JacocoReport:
+ * https://docs.gradle.org/current/userguide/jacoco_plugin.html
+ * https://github.com/codecov/example-gradle
+ */
+/*
+To run:
+
+Can be run on the whole project:
+gradle check
+
+Can be run on individual subprojects:
+gradle jacocoTestReport
+*/
+
+def configDir = "${project.rootDir}/config/jacoco"
+def reportsOut = "${project.buildDir}/reports/jacoco"
+
+
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "${jacocoVersion}"
+    reportsDir = file("${reportsOut}")
+}
+
+/**
+ * Can be run on individual subprojects:
+ * gradle jacocoTestReport
+ */
+jacocoTestReport {
+    reports {
+        xml {
+            enabled = true
+            destination = file("${reportsOut}/report.xml")
+        }
+        html {
+            enabled = false
+            destination = file("${reportsOut}")
+        }
+        csv.enabled false
+    }
+}
+
+check.dependsOn jacocoTestReport
+
+apply plugin: "com.github.kt3k.coveralls"
+
+coveralls {
+//    sourceDirs = sourceSets.main.allSource.srcDirs.flatten()
+    jacocoReportPath = "${reportsOut}/report.xml"
+}

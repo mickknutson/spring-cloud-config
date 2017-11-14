@@ -1,20 +1,28 @@
+#------------------------------------------------------------------------------#
+# Application YAML #
+# inside ./src/main/resources/bootstrap.yml
+#------------------------------------------------------------------------------#
 # Bootstrap properties
 
+##---------------------------------------------------------------------------##
 # git: microservices-client.properties / yml
 spring:
   application:
     name: microservices-client
 
+##---------------------------------------------------------------------------##
 # git: microservices-client-dev.properties / yml
   profiles:
     active: dev
 
+##---------------------------------------------------------------------------##
   cloud:
     config:
       uri: http://localhost:8888
       username: user1
       password: changeme
 
+      # Fail in the event Config Server is not available:
       failFast: true
       retry:
         max-attempts: 3
@@ -22,6 +30,10 @@ spring:
         max-interval: 2500
         multiplier: 2.5
 
+##---------------------------------------------------------------------------##
+      # Can use System Properties (CLIENT_CONFIG_LABEL) to define
+      # the LABEL / BRANCH to use:
       # Can be branch or tag:
 #      label: ${CLIENT_CONFIG_LABEL:v.2.0}
+
 

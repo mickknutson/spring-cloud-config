@@ -1,5 +1,7 @@
 package com.baselogic.cloud.configserver;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -24,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class CORSFilter extends GenericFilterBean implements Filter {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -40,13 +44,21 @@ public class CORSFilter extends GenericFilterBean implements Filter {
         httpResponse.setHeader("Access-Control-Allow-Credentials", "false");
         httpResponse.setHeader("Access-Control-Max-Age", "3600");
 
-        System.out.println("********** CORS Configuration Completed **********");
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nCORS HEADERS:\n");
+        sb.append("---------------\n");
+        httpResponse.getHeaderNames()
+                .forEach(name -> {
+                    sb.append(name).append(": ").append(httpResponse.getHeader(name)).append("\n");
+                }
+        );
+        logger.debug("********** CORS Configuration Completed **********");
+        logger.debug(sb.toString());
 
         chain.doFilter(request, response);
     }
 
     @Override
-    public void destroy() {
-    }
+    public void destroy() {}
 
 } // The End...

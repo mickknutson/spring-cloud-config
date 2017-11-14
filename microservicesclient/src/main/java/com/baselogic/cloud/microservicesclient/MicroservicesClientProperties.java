@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Configuration for YML should be:
+ *
  * <pre>
  * config.client:
  *   message: Some Message

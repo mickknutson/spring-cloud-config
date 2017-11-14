@@ -1,15 +1,18 @@
 package com.baselogic.cloud.configserver;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
  * Another way to enable CORS.
  */
-//@Configuration
-public class WebConfig //extends WebMvcConfigurerAdapter
-{
+@Configuration
+@Profile("corsWebConfig")
+public class WebConfig extends WebMvcConfigurerAdapter {
 
-//    @Override
+    @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("*")

@@ -1,7 +1,12 @@
+#------------------------------------------------------------------------------#
+# Application YAML #
+# inside ./src/main/resources/application.yml
+#------------------------------------------------------------------------------#
 # Tomcat Port:
 server:
   port: 8888
 
+##---------------------------------------------------------------------------##
 # Config Repo:
 spring:
   cloud:
@@ -9,7 +14,24 @@ spring:
       server:
         git:
           uri: file:///${HOME}/microservices_config_repo
+          # |
 
+          # Could also have remote repositories:
+#          uri: https://github.com/mickknutson/{application}
+#          username: bob
+#          password: strongpassword
+
+        # Health Indicator
+        health:
+          repositories:
+            microservices-client-default:
+              label: v.3.0
+            microservices-client-dev:
+              name: microservices-client
+              profiles: dev
+              label: HOTFIX
+
+##---------------------------------------------------------------------------##
 # Show sensitive information for endpoints:
 endpoints:
   sensitive: true
@@ -27,3 +49,27 @@ security:
     name: user1
     password: changeme
 
+
+##---------------------------------------------------------------------------##
+## TLS Profile Properties
+---
+
+spring:
+  profiles: TLS
+
+## TLS over HTTP/1.1:
+## https://localhost:8443
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    keyStore: "classpath:keys/config_clientauth.p12"
+    keyStorePassword: changeit
+    keyStoreType: PKCS12
+    keyAlias: cloudclient
+    protocol: TLS
+
+#File keystore = new ClassPathResource("keys/tomcat.keystore").getFile();
+#File truststore = new ClassPathResource("keys/tomcat.truststore").getFile();
+
+##---------------------------------------------------------------------------##

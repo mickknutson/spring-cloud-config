@@ -1,0 +1,54 @@
+/**
+ * Findbugs Configuration
+ * https://docs.gradle.org/current/userguide/findbugs_plugin.html
+ *
+ * gradle findBugs
+ */
+apply plugin: "findbugs"
+
+def configDir = "${project.rootDir}/config/findbugs"
+def reportsOut = "${project.buildDir}/reports/findbugs"
+
+
+findbugs {
+//    toolVersion = "3.0.1"
+    sourceSets = [sourceSets.main]
+    ignoreFailures = true
+
+    reportsDir = file("${reportsOut}")
+    excludeFilter = file("${configDir}/findbugs-exclude.xml")
+    effort = "max"
+    reportLevel = "medium"
+}
+
+task findbugs(type: FindBugs) {
+    ignoreFailures = true
+    effort = "max"
+    reportLevel = "medium"
+
+    classes = fileTree("${project.buildDir}/classes/java")
+    source = fileTree("${project.projectDir}/src/main/java")
+
+    classpath = files()
+
+    reports {
+        xml {
+            enabled = true
+            destination = file("${reportsOut}/findbugs.xml")
+        }
+        html {
+            enabled = false
+            destination = file("${reportsOut}/index.html")
+            stylesheet = resources.text.fromFile("${configDir}/color.xsl")
+        }
+
+    }
+}
+
+project.findbugs.ignoreFailures = true
+
+//check.dependsOn findbugs
+// check {
+//    dependsOn += ["findbugs"]
+//}
+
