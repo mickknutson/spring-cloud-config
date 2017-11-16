@@ -1,0 +1,73 @@
+##---------------------------------------------------------------------------##
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+# TO Revisit:
+# https://github.com/AnySoftKeyboard/AnySoftKeyboard/blob/master/circle.yml
+##---------------------------------------------------------------------------##
+version: 2
+jobs:
+  build:
+
+    working_directory: ~/tmp/workspace
+
+    environment:
+      _JAVA_OPTIONS: "-Xms512m -Xmx1024m"
+#      LOCAL_REPO: ./StudentWork/Tools/local/repository
+      BASE_DIR: "./StudentWork/code/oauth2-server/solution-code"
+
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+        environment:
+          LOCAL_REPO: ./StudentWork/Tools/local/repository
+          BASE_DIR: "./StudentWork/code/oauth2-server/solution-code"
+          _JAVA_OPTIONS: "-Xms512m -Xmx1024m"
+          MAVEN_OPTS: "-Dmaven.repo.local=../../../Tools/local/repository"
+
+
+    steps:
+
+      - checkout
+
+      - run:
+          environment:
+            SSH_TARGET: "localhost"
+            TEST_ENV: "linux"
+          command: |
+            set -xu
+            pwd
+            ls -la
+            ls -la ${LOCAL_REPO}
+            ls -la ${BASE_DIR}
+
+      - run:
+          name: Verify the Project
+#          command: mvn verify -Dmaven.repo.local=../../../Tools/local/repository
+          command: mvn verify
+          working_directory: ./StudentWork/code/oauth2-server/solution-code
+#          working_directory: $BASE_DIR
+
+      - run:
+          command: |
+            set -xu
+            pwd
+            ls -la ${LOCAL_REPO}
+            ls -la ${BASE_DIR}
+            ls -la $BASE_DIR/target
+            ls -la $BASE_DIR/target/surefire-reports
+
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/junit
+      - store_artifacts:
+          path: ~/junit
+
+
+## The End... ##
+##---------------------------------------------------------------------------##
