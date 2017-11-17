@@ -14,58 +14,152 @@ jobs:
 
     environment:
       _JAVA_OPTIONS: "-Xms512m -Xmx1024m"
-#      LOCAL_REPO: ./StudentWork/Tools/local/repository
-      BASE_DIR: "./StudentWork/code/oauth2-server/solution-code"
+      BASE_DIR: "./"
 
     docker:
       - image: circleci/openjdk:8-jdk-browsers
         environment:
-          LOCAL_REPO: ./StudentWork/Tools/local/repository
-          BASE_DIR: "./StudentWork/code/oauth2-server/solution-code"
+          BASE_DIR: "./"
           _JAVA_OPTIONS: "-Xms512m -Xmx1024m"
-          MAVEN_OPTS: "-Dmaven.repo.local=../../../Tools/local/repository"
 
 
+##---------------------------------------------------------------------------##
+## Gradle Steps
+##---------------------------------------------------------------------------##
     steps:
 
       - checkout
 
       - run:
-          environment:
-            SSH_TARGET: "localhost"
-            TEST_ENV: "linux"
+          name: Initialize
           command: |
             set -xu
+            echo $CIRCLE_WORKING_DIRECTORY
+            mkdir -p ~/junit/
             pwd
             ls -la
-            ls -la ${LOCAL_REPO}
             ls -la ${BASE_DIR}
+            find . -maxdepth 2 -exec du -ms {} \; | sort -rn | head -n 15
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "build.gradle" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: Downloading Dependencies
+          command: ./gradlew dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+
+      # run test, check, coverage reports and be quick about it!!!
+      - run:
+          name: run test, check, coverage reports
+          command: ./gradlew check
+
+      - run:
+          name: Saving test results
+          command: |
+            set -xu
+            mkdir -p ~/junit/
+            find . -type f -regex ".*/build/test-results/test/.*xml" -exec cp {} ~/junit/ \;
+          when: always
+
+      - run:
+          name: Saving Coverage results
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex ".*/build/reports/jacoco/.*xml" -exec cp {} ~/junit/ \;
+            bash <(curl -s https://codecov.io/bash)
+
+      - run:
+          name: listing after saving test results
+          command: |
+            set -xu
+            ls -la ~/junit
+
+      - store_test_results:
+          name: Storing test results
+          path: ~/junit
+
+      - run:
+          name: listing after Storing test results
+          command: |
+            set -xu
+            ls -la ~/junit
+
+      - store_artifacts:
+          name: Storing Artifacts
+          path: ~/junit
+
+##---------------------------------------------------------------------------##
+## Maven Steps
+##---------------------------------------------------------------------------##
+    steps:
+
+      - checkout
+
+      - run:
+          name: Initialize
+          command: |
+            set -xu
+            echo $CIRCLE_WORKING_DIRECTORY
+            mkdir -p ~/junit/
+            pwd
+            ls -la
+            ls -la ${BASE_DIR}
+            find . -maxdepth 2 -exec du -ms {} \; | sort -rn | head -n 15
 
       - run:
           name: Verify the Project
-#          command: mvn verify -Dmaven.repo.local=../../../Tools/local/repository
           command: mvn verify
-          working_directory: ./StudentWork/code/oauth2-server/solution-code
+          working_directory: ./
+          # Does not seem to work:
 #          working_directory: $BASE_DIR
 
       - run:
           command: |
             set -xu
             pwd
-            ls -la ${LOCAL_REPO}
             ls -la ${BASE_DIR}
-            ls -la $BASE_DIR/target
-            ls -la $BASE_DIR/target/surefire-reports
 
       - run:
           name: Save test results
           command: |
-            mkdir -p ~/junit/
+            set -xu
             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/junit/ \;
           when: always
+
+      - run:
+          name: Save Coverage results
+          command: |
+            set -xu
+            find . -type f -regex ".*/target/jacoco/.*xml" -exec cp {} ~/junit/ \;
+            bash <(curl -s https://codecov.io/bash)
+
+      - run:
+          name: listing after saving test results
+          command: |
+            set -xu
+            ls -la ~/junit
+
       - store_test_results:
+          name: Storing test results
           path: ~/junit
+
+      - run:
+          name: listing after Storing test results
+          command: |
+            set -xu
+            ls -la ~/junit
+
       - store_artifacts:
+          name: Storing Artifacts
           path: ~/junit
 
 

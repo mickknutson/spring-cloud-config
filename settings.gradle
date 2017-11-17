@@ -7,8 +7,17 @@
  * Detailed information about configuring a multi-project build in Gradle can be found
  * in the user guide at https://docs.gradle.org/current/userguide/multi_project_builds.html
  *
+ * To run a single module group:
+ * gradle :microservicesclient:check
+ * ./gradlew :microservicesclient:check
+ *
  */
+rootProject.name = 'spring-cloud-config'
 
-rootProject.name = 'configserver'
+//---------------------------------------------------------------------------//
+// Import all the sub projects:
+
+include 'configserver'
+include 'microservicesclient'
 
 //---------------------------------------------------------------------------//

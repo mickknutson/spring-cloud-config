@@ -16,7 +16,6 @@ buildscript {
     dependencies {
         classpath ("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath ("io.spring.gradle:dependency-management-plugin:${dependencyManagementPluginVersion}")
-//        classpath ("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:${sonarqubeGradlePluginVersion}")
     }
 }
 
@@ -26,8 +25,6 @@ apply plugin: "idea"
 apply plugin: "org.springframework.boot"
 
 apply plugin: "io.spring.dependency-management"
-
-//    apply from: "${rootDir}/config/sonarqube-multiproject.gradle"
 
 repositories {
     mavenLocal()

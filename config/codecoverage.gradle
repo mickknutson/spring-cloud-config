@@ -45,10 +45,11 @@ jacocoTestReport {
 }
 
 check.dependsOn jacocoTestReport
+//jacocoTestReport.dependsOn test
 
-apply plugin: "com.github.kt3k.coveralls"
+//apply plugin: "com.github.kt3k.coveralls"
 
-coveralls {
+/*coveralls {
 //    sourceDirs = sourceSets.main.allSource.srcDirs.flatten()
     jacocoReportPath = "${reportsOut}/report.xml"
-}
+}*/
