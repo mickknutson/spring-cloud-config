@@ -12,6 +12,6 @@
 #    - $HOME/.gradle/wrapper/
 
 language: java
-sudo: false
+sudo: true
 jdk:
   - oraclejdk8
