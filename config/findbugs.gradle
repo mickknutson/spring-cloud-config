@@ -21,7 +21,7 @@ findbugs {
     reportLevel = "medium"
 }
 
-task findbugs(type: FindBugs) {
+task findbugsReport(type: FindBugs) {
     ignoreFailures = true
     effort = "max"
     reportLevel = "medium"
@@ -33,22 +33,30 @@ task findbugs(type: FindBugs) {
 
     reports {
         xml {
-            enabled = true
-            destination = file("${reportsOut}/findbugs.xml")
+            enabled = false
+            setDestination(file("${reportsOut}/findbugs.xml"))
         }
         html {
-            enabled = false
-            destination = file("${reportsOut}/index.html")
+            enabled = true
+            setDestination(file("${reportsOut}/index.html"))
             stylesheet = resources.text.fromFile("${configDir}/color.xsl")
         }
 
     }
 }
 
+//tasks.withType(FindBugs) {
+//    reports {
+//        xml.enabled false
+//        html.enabled true
+//        html.stylesheet resources.text.fromFile('config/xsl/findbugs-custom.xsl')
+//    }
+//}
+
 project.findbugs.ignoreFailures = true
 
 //check.dependsOn findbugs
-// check {
-//    dependsOn += ["findbugs"]
-//}
+ check {
+    dependsOn += ["findbugsReport"]
+}
 

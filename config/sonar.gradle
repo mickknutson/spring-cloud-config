@@ -5,7 +5,8 @@
  *
  * apply from: "${rootDir}/config/sonar.gradle"
  *
- * gradle sonarqube
+ * This will run Sonar, then publish build results:
+ * ./gradlew sonarqube -Dscan
  *
  */
 /*buildscript {
@@ -34,7 +35,7 @@ sonarqube {
     }
 }
 
-//project("chapter01:chapter01.00-calendar") {sonarqube {skipProject = true}}
+// project("chapter01:chapter01.00-calendar") {sonarqube {skipProject = true}}
 
 /*
 include 'chapter02:chapter02.00-calendar'

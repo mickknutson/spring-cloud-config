@@ -1,35 +1,51 @@
 /**
  * https://github.com/bmuschko/gradle-docker-plugin
+ *
+ * TODO: Revisit:
+ * https://github.com/sgornostal/gradle-docker-plugin
  */
-
-// import task classes
-import com.bmuschko.gradle.docker.tasks.image.*
-import com.bmuschko.gradle.docker.tasks.container.*
-
-apply plugin: "application"
-
-apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
-apply plugin: com.bmuschko.gradle.docker.DockerJavaApplicationPlugin
-
-def fromImage = "openjdk:8-jre-alpine"
-def maintainerEmail = "Mick Knutson <mknutson@baselogic.io>"
-def exposePorts = [8888]
-def exposeBindings = ['8888:8888']
-def imageTag = "mickknutson/jbcpcalendar-client:latest"
-def containerTag = "jbcpcalendar-client"
-def projectTag = "FOOBAR"
-def jarTag = "jbcpcalendar-client"
-
 buildscript {
     ext{}
     repositories {
         jcenter()
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:gradle-processes:latest.release'
-        classpath( 'com.bmuschko:gradle-docker-plugin:latest.release' )
+//        classpath "com.github.jengelman.gradle.plugins:gradle-processes:latest.release"
+        classpath( "com.bmuschko:gradle-docker-plugin:latest.release" )
     }
 }
+
+apply plugin: "application"
+
+apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+apply plugin: com.bmuschko.gradle.docker.DockerJavaApplicationPlugin
+
+// import task classes
+import com.bmuschko.gradle.docker.tasks.image.*
+import com.bmuschko.gradle.docker.tasks.container.*
+
+
+
+//---------------------------------------------------------------------------//
+
+// TODO: Can these be defined locally?
+
+def fromImage = "openjdk:8-jre-alpine"
+def maintainerEmail = "Mick Knutson <mknutson@baselogic.io>"
+
+def projectTag = "jbcpcalendar"
+def jarTag = "jbcpcalendar"
+def containerName = "mickknutson/${project.name}"
+def imageName = "mickknutson/${project.name}"
+
+def exposePorts = [8080, 8443]
+def exposeBindings = ["80:8080", "443:8443"]
+def imageTag = "mickknutson/${project.name}:${this.version}"
+
+
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
 
 /**
  * Docker Configuration
@@ -47,13 +63,20 @@ buildscript {
  * --> Remove Container
  * docker stop $(docker ps -a -q)
  * docker rm $(docker ps -a -q)
+ *
  * or:
  * docker rm /jbcpcalendar-client
  *
+ *
  * --> Remove Image
- * docker rmi $(docker images -a -q)
+ * docker rmi $(docker images -a -q -f)
+ *
  * or:
  * docker rmi mickknutson/jbcpcalendar-client
+ *
+ * or
+ * docker rmi [image name] -f
+ *
  *
  * --> To push:
  * docker push mickknutson/jbcpcalendar-client:latest
@@ -67,67 +90,128 @@ docker run \
   --detach \
   -e "OAUTH_URL=http://$(ifconfig en0 | awk '/ *inet /{print $2}'):8080" \
   -t mickknutson/jbcpcalendar-client:latest && \
-docker logs jbcpcalendar-client --tail="0" --follow
+
+
+-v /var/www
+
+
+docker logs jbcpcalendar --tail="0" --follow
 
   -e "http://$(ifconfig en0 | awk '/ *inet /{print $2}'):8080" \
 */
 
 dockerDistTar {
 
+    instruction {'RUN ls -la'}
     projectTag = (project.path).substring((project.path).lastIndexOf(':')+1)
-
     environmentVariable ('projectTag', "${projectTag}")
-    instruction {"ADD app-lib/${jarTag}-${version}.jar /${jarTag}.jar"}
-//    instruction {"RUN mv ${projectTag}/bin/${projectTag} ${projectTag}/bin/${projectTag}.sh"}
+    instruction {"ADD app-lib/${jarTag}-*.jar /${jarTag}.jar"}
+
     instruction {"RUN rm -rf ${projectTag}"}
 
 //    instruction {'RUN ls -la ./chapter*/bin/'}
     instruction {"RUN sh -c 'touch ./${jarTag}.jar'"}
     instruction {'RUN ls -la'}
 
-//    instruction {"ENTRYPOINT ./${projectTag}/bin/${projectTag}.sh"}
-    instruction {"ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar ./${jarTag}.jar"}
     environmentVariable ('JAVA_OPTS', '-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap')
-    environmentVariable ('OAUTH_URL_TEST', "\"http://MUST GET ACTUAL IP:8080\"")
-    environmentVariable ('OAUTH_URL', "http://\$(ifconfig en0 | awk '/ *inet /{print \$2}'):8080")
+//    environmentVariable ('OAUTH_URL_TEST', "\"http://MUST GET ACTUAL IP:8080\"")
+//    environmentVariable ('OAUTH_URL', "http://\$(ifconfig en0 | awk '/ *inet /{print \$2}'):8080")
+
+
+//    instruction {"ENTRYPOINT ./${projectTag}/bin/${projectTag}"}
+    instruction {"ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar ./${jarTag}.jar"}
 
 }
 
+/**
+ * Can I put this into sub projects?
+ */
 docker {
 //    url = 'https://192.168.59.103:2376'
 //    certPath = new File(System.properties['user.home'], '.boot2docker/certs/boot2docker-vm')
 
-    registryCredentials {
-        url = 'https://index.docker.io/v1/'
-        username = 'mickknutson'
-        password = 'pwd'
-        email = 'mickknutson@gmail.com'
-    }
+//    registryCredentials {
+//        url = 'https://index.docker.io/v1/'
+//        username = 'mickknutson'
+//        password = 'pwd'
+//        email = 'mickknutson@gmail.com'
+//    }
 
     javaApplication {
         baseImage fromImage
         maintainer = maintainerEmail
         ports = exposePorts
         tag = imageTag
+        imageName = imageName
+//        imageId = imageName
 
+
+        // Not sure why to use this, as this does not work
         exec {
-            defaultCommand "server"
+//            defaultCommand "server"
+            // Linux:
+//             entryPoint "./${projectTag}/bin/${projectTag}"
 //            entryPoint "java -Djava.security.egd=file:/dev/./urandom -jar ./${jarTag}.jar"
+//            entryPoint "java -jar ./${jarTag}.jar"
         }
     }
 }
 
-/**
- * gradle startContainer -Pfast -s
- */
-task createContainer(type: DockerCreateContainer) {
 
-    dependsOn dockerBuildImage
-    targetImageId { dockerBuildImage.getImageId() }
-    portBindings = exposeBindings
+//---------------------------------------------------------------------------//
+
+/**
+ * gradle buildImage -Pfast -s
+ */
+task listDocker(dependsOn: [dockerBuildImage]) {
+
+    println "----------------------------------\n" +
+            "fromImage = $fromImage\n" +
+            "maintainerEmail = $maintainerEmail\n" +
+            "\n" +
+            "projectTag = $projectTag\n" +
+            "jarTag = $jarTag\n" +
+            "containerName = $containerName\n" +
+            "imageName = $imageName\n" +
+            "\n" +
+            "exposePorts = $exposePorts\n" +
+            "exposeBindings = $exposeBindings\n" +
+            "imageTag = $imageTag\n" +
+            "----------------------------------\n"
+
+////    inputDir = file("$projectDir/docker")
+//    inputDir = file(".")
+//
+//    tag = "${imageTag}"
+//    imageId = "${imageName}"
+//    imageName = "${imageName}"
 }
 
-task startContainer(type: DockerStartContainer) {
+/**
+ * gradle createContainer -Pfast -s
+ */
+task createContainer(type: DockerCreateContainer, dependsOn: [listDocker, dockerBuildImage]) {
+
+    targetImageId { dockerBuildImage.getImageId() }
+
+    containerId = "FUCKYOU"
+    containerName = "FUCKYOU"
+
+    portBindings = exposeBindings
+
+//    doFirst{ // doFirst required! #319
+//        links = [ "${createDBContainer.getContainerId()}:database" ] // `database` there will be host used by application to DB connect
+//    }
+
+    // If you use Systemd in containers you should also add lines: (#320):
+    binds = [ '/sys/fs/cgroup': '/sys/fs/cgroup' ]
+    tty = true
+}
+
+/**
+ * gradle clean startContainer -Pfast -s
+ */
+task startContainer(type: DockerStartContainer, dependsOn: [createContainer]) {
     dependsOn createContainer
     targetContainerId { createContainer.getContainerId() }
 //    containerName = containerTag
@@ -152,18 +236,52 @@ task removeContainer(type: DockerRemoveContainer) {
 
 task removeImage(type: DockerRemoveImage) {
 //    dependsOn removeContainer
-    targetImageId { "mickknutson/jbcpcalendar-client" }
+    targetImageId { "${imageName}" }
 }
+
+/**
+ * gradle clean dockerfile -Pfast -s
+ */
+//task buildDockerfile(type: Dockerfile) {
+//    imageName = "${imageName}"
+//
+//    tag "${this.version}"
+//}
+
 
 /**
  * gradle pushImage -Pfast -s
  */
+//task pushImage(type: DockerPushImage) {
+//    dependsOn dockerBuildImage
+//    imageName = "${imageName}"
+//
+//    tag "${this.version}"
+//}
 
-task pushImage(type: DockerPushImage) {
-    dependsOn dockerBuildImage
-    imageName "mickknutson/jbcpcalendar-client"
 
-    tag "latest"
+//---------------------------------------------------------------------------//
+
+/**
+ * Iterative tasks are things like DockerBuildImage, DockerLogsContainer, DockerListImages
+ *
+ * gradle dockerLogsContainer
+ * gradle dockerListImages
+ */
+task logContainer(type: DockerLogsContainer) {
+    targetContainerId { "container-that-does-exist" }
+    follow = true
+    tailAll = true
+    onNext { message ->
+        // each log message from the container will be passed as it's made available
+        logger.quiet message.toString()
+    }
+}
+task logImage(type: DockerListImages) {
+    onNext { message ->
+        // each log message from the container will be passed as it's made available
+        logger.quiet message.toString()
+    }
 }
 
 

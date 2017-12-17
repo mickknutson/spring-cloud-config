@@ -14,13 +14,20 @@ import java.util.Arrays;
 
 @SpringBootApplication
 @EnableConfigServer
-public class ConfigserverApplication {
+public class Application {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static void main(String[] args) {
-		SpringApplication.run(ConfigserverApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
+
+
+    /**
+     * TODO: Add a mapping for '/' to show default message.
+     */
+
+
 
     /**
      * Print out all beans in context if 'trace' profile is enabled

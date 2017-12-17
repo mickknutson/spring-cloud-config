@@ -30,21 +30,38 @@ jacoco {
  * Can be run on individual subprojects:
  * gradle jacocoTestReport
  */
-jacocoTestReport {
+/*jacocoTestReport {
+
+    xmlReport = true
+    htmlReport = false
+
+    if (!ext.has("htmlCoverage")) {
+        xmlReport = false
+        htmlReport = true
+    }
+
     reports {
         xml {
-            enabled = true
-            destination = file("${reportsOut}/report.xml")
+            enabled = xmlReport
+            setDestination(file("${project.buildDir}/reports/jacoco/report.xml"))
         }
         html {
-            enabled = false
-            destination = file("${reportsOut}")
+            enabled = htmlReport
+            setDestination(file("${project.buildDir}/reports/jacoco/"))
         }
-        csv.enabled false
+    }
+}*/
+
+jacocoTestReport {
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
     }
 }
 
 check.dependsOn jacocoTestReport
+
 //jacocoTestReport.dependsOn test
 
 //apply plugin: "com.github.kt3k.coveralls"
@@ -53,3 +70,114 @@ check.dependsOn jacocoTestReport
 //    sourceDirs = sourceSets.main.allSource.srcDirs.flatten()
     jacocoReportPath = "${reportsOut}/report.xml"
 }*/
+
+
+
+
+
+//---------------------------------------------------------------------------//
+/**
+ * JacocoReport:
+ * https://docs.gradle.org/current/userguide/jacoco_plugin.html
+ * https://github.com/codecov/example-gradle
+ *
+ * To run:
+ *
+ * gradle clean test jacoco
+ * gradle clean test jacocoTestReport
+ *
+ * Can be run on the whole project:
+ * gradle check
+ * gradle codeCoverageReport
+ *
+ * Can be run on individual subprojects:
+ * gradle jacocoTestReport
+ */
+/*task codeCoverageReport(type: JacocoReport) {
+//    executionData fileTree(project.rootDir.absolutePath).include("* * /build/jacoco/*.exec")
+
+
+    subprojects.each {
+        sourceSets it.sourceSets.main
+    }
+
+    reports {
+        xml {
+            enabled = true
+            setDestination(file("${buildDir}/reports/jacoco/report.xml"))
+        }
+        html {
+            enabled = false
+            setDestination(file("${buildDir}/reports/jacoco/jacocoHtml"))
+        }
+        csv.enabled false
+    }
+}*/
+
+//codeCoverageReport.dependsOn {
+//    subprojects*.test
+//}
+
+/**
+ * https://lkrnac.net/blog/2016/10/aggregate-test-coverage-report/
+ */
+/*def publishedProjects = subprojects.findAll()
+
+task codeCoverageReport2(type: JacocoReport, group: "Coverage reports") {
+    description = "Generates an aggregate report from all subprojects"
+
+    dependsOn(publishedProjects.test)
+
+    additionalSourceDirs = files(publishedProjects.sourceSets.main.allSource.srcDirs)
+    sourceDirectories = files(publishedProjects.sourceSets.main.allSource.srcDirs)
+    classDirectories = files(publishedProjects.sourceSets.main.output)
+    executionData = files(publishedProjects.jacocoTestReport.executionData)
+
+    doFirst {
+        executionData = files(executionData.findAll { it.exists() })
+    }
+
+    reports {
+        xml {
+            enabled = true
+            setDestination(file("${project.buildDir}/reports/jacoco/report.xml"))
+        }
+        html {
+            enabled = false
+            setDestination(file("${project.buildDir}/reports/jacoco/"))
+        }
+    }
+}*/
+
+/**
+ * https://github.com/ben-manes/caffeine/blob/master/build.gradle
+ * https://github.com/kt3k/coveralls-gradle-plugin
+ * https://plugins.gradle.org/plugin/com.github.kt3k.coveralls
+ *
+ * https://coveralls.io/bitbucket/mickknutson/jbcpcalendar
+ */
+/*coveralls {
+//    sourceDirs = publishedProjects.sourceSets.main.allSource.srcDirs.flatten()
+//    jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
+//}
+//
+//tasks.coveralls {
+//    dependsOn jacocoRootReport
+//}
+*/
+
+/**
+ * Coveralls.io integration
+ * https://coveralls.io/bitbucket/mickknutson/jbcpcalendar
+ *
+ */
+/*
+coveralls {
+//    sourceDirs = publishedProjects.sourceSets.main.allSource.srcDirs.flatten()
+    jacocoReportPath = "${buildDir}/reports/jacoco/report.xml"
+}
+
+//tasks.coveralls {
+//    dependsOn "check"
+//}
+*/

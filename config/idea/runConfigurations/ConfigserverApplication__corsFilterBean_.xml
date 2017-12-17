@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ConfigserverApplication (corsFilterBean)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.baselogic.cloud.configserver.Application" />
+    <option name="VM_PARAMETERS" value="-Dspring.profiles.active=corsFilterBean" />
+    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/configserver" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="ALTERNATIVE_JRE_PATH" value="1.8.0_151" />
+    <module name="configserver_main" />
+    <envs />
+    <method />
+  </configuration>
+</component>

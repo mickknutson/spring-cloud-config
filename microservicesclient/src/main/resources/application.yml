@@ -2,6 +2,8 @@
 # Application YAML #
 # inside ./src/main/resources/application.yml
 #------------------------------------------------------------------------------#
+debug: true
+
 # Disable security for Actuator endpoints:
 # otherwise, you will see a 401 UnAuthorized Error
 management.security.enabled: true

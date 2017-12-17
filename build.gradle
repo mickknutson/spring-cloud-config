@@ -9,7 +9,6 @@ buildscript {
     ext {}
 
     repositories {
-        mavenLocal()
         jcenter()
         maven { url("https://plugins.gradle.org/m2/") }
     }
@@ -17,6 +16,7 @@ buildscript {
         classpath ("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath ("io.spring.gradle:dependency-management-plugin:${dependencyManagementPluginVersion}")
         classpath ("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:${sonarqubeGradlePluginVersion}")
+//        classpath ("com.bmuschko:gradle-docker-plugin:latest.release")
     }
 }
 
@@ -31,24 +31,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    /**
-     * https://docs.gradle.org/current/userguide/project_reports_plugin.html
-     * taskReport
-     * propertyReport
-     * dependencyReport
-     * htmlDependencyReport
-     * --> projectReports
-     */
-    apply plugin: "project-report"
-
-    check.dependsOn projectReport
-
-
-    // Code Coverage:
-    apply from: "${rootDir}/config/codecoverage.gradle"
-
     repositories {
-        mavenLocal()
         jcenter()
         maven { url "https://plugins.gradle.org/m2/" }
 
@@ -66,6 +49,23 @@ allprojects {
 subprojects {
 
     apply plugin: "io.spring.dependency-management"
+
+    /**
+     * https://docs.gradle.org/current/userguide/project_reports_plugin.html
+     * taskReport
+     * propertyReport
+     * dependencyReport
+     * htmlDependencyReport
+     * --> projectReports
+     */
+    apply plugin: "project-report"
+    check.dependsOn projectReport
+
+    // Utils:
+    apply from: "${rootDir}/config/utils.gradle"
+
+    // Code Coverage:
+    apply from: "${rootDir}/config/codecoverage.gradle"
 
     //-----------------------------------------------------------------------//
     dependencyManagement {
@@ -112,7 +112,6 @@ subprojects {
                                                     "checkstyleTest",
                                                     "pmdMain",
                                                     "findbugsMain",
-//                                                    "test",
                                                     "projectReport"]
     }
 
@@ -159,15 +158,26 @@ subprojects {
         options.fork = true
     }
 
+    /**
+     * This needs to be moved to each submodule's build.gradle:
+     */
     jar {
         baseName = "${rootProject.name}"
-        version =  "${project.version}"
-        manifest {
-            attributes(
-                    "Main-Class": "com.packtpub.springsecurity.CalendarApplication"
-            )
-        }
+        version =  "${rootProject.version}"
+
+//        manifest {
+//            attributes(
+//                    "Main-Class": "com.baselogic.cloud.Application"
+//            )
+//        }
     }
+
+    /*task("execJar", type:Jar, dependsOn: "jar") {
+        baseName = "${rootProject.name}"
+        version =  "${this.version}"
+        classifier = "exec"
+        from sourceSets.main.output
+    }*/
 
 
 } // subprojects
@@ -239,82 +249,6 @@ buildScanRecipes {
 }
 */
 
-
-
-
-//---------------------------------------------------------------------------//
-/**
- * JacocoReport:
- * https://docs.gradle.org/current/userguide/jacoco_plugin.html
- * https://github.com/codecov/example-gradle
- *
- * To run:
- *
- * gradle clean test jacoco
- * gradle clean test jacocoTestReport
- *
- * Can be run on the whole project:
- * gradle check
- * gradle codeCoverageReport
- *
- * Can be run on individual subprojects:
- * gradle jacocoTestReport
- */
-task codeCoverageReport(type: JacocoReport) {
-    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-
-    subprojects.each {
-        sourceSets it.sourceSets.main
-    }
-
-    reports {
-        xml {
-            enabled = true
-            destination = file("${buildDir}/reports/jacoco/report.xml")
-        }
-        html {
-            enabled = false
-            destination = file("${buildDir}/reports/jacoco/jacocoHtml")
-        }
-        csv.enabled false
-    }
-}
-
-codeCoverageReport.dependsOn {
-    subprojects*.test
-}
-
-/**
- * https://lkrnac.net/blog/2016/10/aggregate-test-coverage-report/
- */
-def publishedProjects = subprojects.findAll()
-
-task codeCoverageReport2(type: JacocoReport, group: "Coverage reports") {
-    description = "Generates an aggregate report from all subprojects"
-
-    dependsOn(publishedProjects.test)
-
-    additionalSourceDirs = files(publishedProjects.sourceSets.main.allSource.srcDirs)
-    sourceDirectories = files(publishedProjects.sourceSets.main.allSource.srcDirs)
-    classDirectories = files(publishedProjects.sourceSets.main.output)
-    executionData = files(publishedProjects.jacocoTestReport.executionData)
-
-    doFirst {
-        executionData = files(executionData.findAll { it.exists() })
-    }
-
-    reports {
-        xml {
-            enabled = true
-            destination = file("${buildDir}/reports/jacoco/report.xml")
-        }
-        html {
-            enabled = false
-            destination = file("${buildDir}/reports/jacoco/jacocoHtml")
-        }
-        csv.enabled false
-    }
-}
 
 //---------------------------------------------------------------------------//
 // The End...

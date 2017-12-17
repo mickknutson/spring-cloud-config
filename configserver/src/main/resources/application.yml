@@ -13,7 +13,9 @@ spring:
     config:
       server:
         git:
-          uri: file:///${HOME}/microservices_config_repo
+          # Look for System variable 'CLOUD_CONFIG_REPO' or use default
+          uri: ${CLOUD_CONFIG_REPO:file:///${HOME}/microservices_config_repo}
+#          uri: file:///${HOME}/microservices_config_repo
           # |
 
           # Could also have remote repositories:

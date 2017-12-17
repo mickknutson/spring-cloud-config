@@ -10,6 +10,14 @@ This readme contains notes on this Config Server
 This code has been developed in Maven and Gradle and has a sub-project for each chapter
 
 
+Docker
+------
+Create executable: gradle bootRepackage
+
+Create Image: docker
+
+
+
 ## Testing Existing Configuration
 
 The format for accessing configuration is:
@@ -17,7 +25,7 @@ The format for accessing configuration is:
 {application}/{profile}/[ {branch/label} ]
 
 default Profile
--
+---
 
 Access configuration for microservices-client application for default profile (without BASIC authentication):
 [http://localhost:8888/microservices-client/default](http://localhost:8888/microservices-client/default)
@@ -27,6 +35,8 @@ Access configuration for microservices-client application for default profile (w
 http localhost:8888/microservices-client/default
 http localhost:8888/microservices-client/default/v.3.0
 http localhost:8888/microservices-client/default/HOTFIX
+
+http localhost:8888/microservices-client/dev/HOTFIX
 
 
 Access configuration for microservices-client application for default profile (with BASIC authentication):
@@ -40,7 +50,7 @@ http -a user1:changeme localhost:8888/microservices-client/default/HOTFIX
 
 
 dev Profile
--
+---
 Access configuration for microservices-client application for default profile (without BASIC authentication):
 [http://localhost:8888/microservices-client/dev](http://localhost:8888/microservices-client/dev)
 [http://localhost:8888/microservices-client/dev/v.3.0](http://localhost:8888/microservices-client/dev/v.3.0)
@@ -61,7 +71,7 @@ http -a user1:changeme localhost:8888/microservices-client/dev/v.3.0
 http -a user1:changeme localhost:8888/microservices-client/dev/HOTFIX
 
 Verification
--
+---
 
 #### curl to verify headers:
 
@@ -79,7 +89,7 @@ http -a user1:changeme localhost:8888/microservices-client/default
 http localhost:8888/microservices-client/default
 
 JSON Formatter
--
+---
 [https://jsonformatter-online.com/](https://jsonformatter-online.com)
 
 ## the end... ##
