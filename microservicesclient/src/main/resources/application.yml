@@ -11,11 +11,11 @@ management.security.enabled: true
 # Enable BASIC Authentication for Service Endpoints
 security.basic.enabled: true
 
+##---------------------------------------------------------------------------##
 security:
   user:
-    name: user2
-    password: changeme
+    name: ${CLIENT_USERNAME:user2}
+    password: ${CLIENT_PASSWORD:changeme}
 
-
-
+##---------------------------------------------------------------------------##
 ##---------------------------------------------------------------------------##

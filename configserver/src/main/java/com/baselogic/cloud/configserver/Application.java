@@ -31,6 +31,10 @@ public class Application {
 
     /**
      * Print out all beans in context if 'trace' profile is enabled
+     *
+     * gradle bootRun -Dspring.profiles.active=trace
+     * gradle bootRun -Dspring.profiles.active=TLS,trace
+     *
      * @param ctx
      * @return
      */

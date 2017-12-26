@@ -18,6 +18,8 @@ import java.io.IOException;
 /**
  * This configuration class will force all HTTP traffic to redirect to HTTPS.
  *
+ *
+ *
  * @author mickknutson
  */
 @Configuration
@@ -52,7 +54,7 @@ public class CustomTomcatEmbeddedServletContainerFactory {
     private Connector httpConnector() {
         Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
         connector.setScheme("http");
-        connector.setPort(8080);
+        connector.setPort(8888);
         connector.setSecure(false);
         connector.setRedirectPort(8443);
 

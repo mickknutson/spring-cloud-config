@@ -1,4 +1,9 @@
 ##---------------------------------------------------------------------------##
+## docker-compose -f docker-compose.yml
+##
+## docker-compose -f docker-compose-tls.yml
+##
+##
 ## Taken from:
 ## https://docs.docker.com/compose/compose-file/
 ## https://docs.docker.com/compose/compose-file/#compose-file-structure-and-examples
@@ -7,6 +12,8 @@
 #
 # https://docs.docker.com/compose/compose-file/
 #
+# https://docs.docker.com/edge/engine/reference/commandline/stack/
+#
 ##---------------------------------------------------------------------------##
 version: "3.4"
 
@@ -14,94 +21,138 @@ services:
 ##---------------------------------------------------------------------------##
 
   ##-------------------------------------------------------------------------##
+  # Config Server
+  ##-------------------------------------------------------------------------##
   configserver:
     container_name: configserver
 
+    #-------------------------------------------------------------------------#
     # Does the build actually create the image?
     build:
       context: ./configserver
       dockerfile: Dockerfile
 
+#    env_file:
+#      - "./configserver/configserver.env"
+#     - "$HOME/.docker/env/configserver.${APP_ENV}.env"
+
+    #-------------------------------------------------------------------------#
     # replace username/repo:tag with your name and image details
     image: mickknutson/configserver:latest
 
+    #-------------------------------------------------------------------------#
     # Expose ports without publishing them to the host machine
     # - they’ll only be accessible to linked services.
-    #    expose:
-    #      - "8888"
+    expose:
+      - 8888
+#      - 8443
 
+    #-------------------------------------------------------------------------#
     # Either specify both ports (HOST:CONTAINER), or just the container port (a random host port will be chosen).
     ports:
       - "8888:8888"
+#      - "8443:8443"
 
+    #-------------------------------------------------------------------------#
     networks:
       cloud-config-net:
-        ipv4_address: 172.42.0.2
+#        ipv4_address: 172.42.0.2
 
+    #-------------------------------------------------------------------------#
     volumes:
       - "$HOME/microservices_config_repo:/app/microservices_config_repo"
 
+    #-------------------------------------------------------------------------#
     environment:
       - CLOUD_CONFIG_REPO=file:////app/microservices_config_repo
       - SPRING_PROFILES_ACTIVE=dev
+#      - SPRING_PROFILES_ACTIVE=TLS
+      - HEALTHCHECK_URI=http://configserver.baselogic.io:8888/health
+#      - HEALTHCHECK_URI=https://configserver.baselogic.io:8443/health
 
+
+    #-------------------------------------------------------------------------#
+    # Health Checks
+    # docker inspect --format "{{json .State.Health.Status }}" configserver
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:8888/health"]
+#      test: ["CMD", "curl", "-f", "https://0.0.0.0:8443/health"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+      timeout: 2s
+
+    #-------------------------------------------------------------------------#
     restart: always
 
 
   ##-------------------------------------------------------------------------##
   # Microservices Client
+  ##-------------------------------------------------------------------------##
   microservicesclient:
     container_name: microservicesclient
 
+    #-------------------------------------------------------------------------#
     build:
       context: ./microservicesclient
       dockerfile: Dockerfile
     image: mickknutson/microservicesclient:latest
 
-    # Expose ports without publishing them to the host machine - they’ll only be accessible to linked services.
-#    expose:
-#      - "8080"
+    #-------------------------------------------------------------------------#
+    # Expose ports without publishing them to the host machine
+    # - they’ll only be accessible to linked services.
+    #expose:
+    #  - "8080"
 
+    #-------------------------------------------------------------------------#
     # Either specify both ports (HOST:CONTAINER), or just the container port (a random host port will be chosen).
     ports:
       - "8080:8080"
 
+    #-------------------------------------------------------------------------#
+    links:
+#      - configserver
+      - configserver:configserver.baselogic.io
+
+    #-------------------------------------------------------------------------#
     networks:
       - cloud-config-net
 
+    #-------------------------------------------------------------------------#
     # depends_on will not wait for 'configserver' to be “ready” before starting 'microservicesclient'
     # - only until they have been started.
     depends_on:
       - configserver
 
-    extra_hosts:
-      - "configserver:172.42.0.2"
-#      - "configserver.baselogic.io:172.42.0.2"
-
-    links:
-      - configserver
-
-    external_links:
-      - configserver
-
-    # docker inspect -f {{.LogPath}} microservicesclient
-    logging:
-      driver: json-file
-
+    #-------------------------------------------------------------------------#
     environment:
       - SPRING_PROFILES_ACTIVE=default
       - CLOUD_CONFIG_CLIENT_FAILFAST=true
-      - CLOUD_CONFIG_URI=http://configserver:8888
+#      - CLOUD_CONFIG_URI=http://configserver:8888
+      - CLOUD_CONFIG_URI=http://configserver.baselogic.io:8888
+#      - CLOUD_CONFIG_URI=https://configserver.baselogic.io:8443
+      - HEALTHCHECK_URI=http://0.0.0.0:8080/health
 
+#      - javax.net.ssl.trustStore=/Users/mickknutson/keys/cloudconfig_clientauth.p12
+#      - javax.net.ssl.trustStorePassword=changeit
+
+
+    #-------------------------------------------------------------------------#
     # Health Checks
     # docker inspect --format "{{json .State.Health.Status }}" microservicesclient
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://0.0.0.0:8888/health"]
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:8080/health"]
       interval: 5s
-      retries: 10
+      retries: 5
       start_period: 10s
       timeout: 2s
 
+    #-------------------------------------------------------------------------#
+    restart: on-failure
+
+
+##---------------------------------------------------------------------------##
+## Other Settings
 ##---------------------------------------------------------------------------##
 
 networks:
@@ -117,139 +168,6 @@ networks:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ##---------------------------------------------------------------------------##
-#version: "3"
-#services:
-#
-#  redis:
-#    image: redis:alpine
-#    ports:
-#      - "6379"
-#    networks:
-#      - frontend
-#    deploy:
-#      replicas: 2
-#      update_config:
-#        parallelism: 2
-#        delay: 10s
-#      restart_policy:
-#        condition: on-failure
-#
-#  db:
-#    image: postgres:9.4
-#    volumes:
-#      - db-data:/var/lib/postgresql/data
-#    networks:
-#      - backend
-#    deploy:
-#      placement:
-#        constraints: [node.role == manager]
-#
-#  vote:
-#    image: dockersamples/examplevotingapp_vote:before
-#    ports:
-#      - 5000:80
-#    networks:
-#      - frontend
-#    depends_on:
-#      - redis
-#    deploy:
-#      replicas: 2
-#      update_config:
-#        parallelism: 2
-#      restart_policy:
-#        condition: on-failure
-#
-#  result:
-#    image: dockersamples/examplevotingapp_result:before
-#    ports:
-#      - 5001:80
-#    networks:
-#      - backend
-#    depends_on:
-#      - db
-#    deploy:
-#      replicas: 1
-#      update_config:
-#        parallelism: 2
-#        delay: 10s
-#      restart_policy:
-#        condition: on-failure
-#
-#  worker:
-#    image: dockersamples/examplevotingapp_worker
-#    networks:
-#      - frontend
-#      - backend
-#    deploy:
-#      mode: replicated
-#      replicas: 1
-#      labels: [APP=VOTING]
-#      restart_policy:
-#        condition: on-failure
-#        delay: 10s
-#        max_attempts: 3
-#        window: 120s
-#      placement:
-#        constraints: [node.role == manager]
-#
-#  visualizer:
-#    image: dockersamples/visualizer:stable
-#    ports:
-#      - "8080:8080"
-#    stop_grace_period: 1m30s
-#    volumes:
-#      - "/var/run/docker.sock:/var/run/docker.sock"
-#    deploy:
-#      placement:
-#        constraints: [node.role == manager]
-#
-#networks:
-#  frontend:
-#  backend:
-#
-#volumes:
-#  db-data:
-
+## END
 ##---------------------------------------------------------------------------##

@@ -7,6 +7,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 /**
  * Another way to enable CORS.
+ *
+ * gradle bootRun -Dspring.profiles.active=corsWebConfig
  */
 @Configuration
 @Profile("corsWebConfig")

@@ -16,73 +16,93 @@ services:
 ##---------------------------------------------------------------------------##
 
   ##-------------------------------------------------------------------------##
+  # Config Server
+  ##-------------------------------------------------------------------------##
   configserver:
     container_name: configserver
 
+    #-------------------------------------------------------------------------#
     # Does the build actually create the image?
     build:
       context: ./configserver
       dockerfile: Dockerfile
 
+    #-------------------------------------------------------------------------#
     # replace username/repo:tag with your name and image details
     image: mickknutson/configserver:latest
 
+    #-------------------------------------------------------------------------#
     # Expose ports without publishing them to the host machine
     # - they’ll only be accessible to linked services.
-    #    expose:
-    #      - "8888"
+    #expose:
+    #  - "8888"
 
+    #-------------------------------------------------------------------------#
     # Either specify both ports (HOST:CONTAINER), or just the container port (a random host port will be chosen).
     ports:
       - "8888:8888"
 
+    #-------------------------------------------------------------------------#
     networks:
       cloud-config-net:
         ipv4_address: 172.42.0.2
 
+    #-------------------------------------------------------------------------#
     volumes:
       - "$HOME/microservices_config_repo:/app/microservices_config_repo"
 
+    #-------------------------------------------------------------------------#
     environment:
       - CLOUD_CONFIG_REPO=file:////app/microservices_config_repo
       - SPRING_PROFILES_ACTIVE=dev
 
+    #-------------------------------------------------------------------------#
     restart: always
 
 
   ##-------------------------------------------------------------------------##
   # Microservices Client
+  ##-------------------------------------------------------------------------##
   microservicesclient:
     container_name: microservicesclient
 
+    #-------------------------------------------------------------------------#
     build:
       context: ./microservicesclient
       dockerfile: Dockerfile
     image: mickknutson/microservicesclient:latest
 
-    # Expose ports without publishing them to the host machine - they’ll only be accessible to linked services.
-#    expose:
-#      - "8080"
+    #-------------------------------------------------------------------------#
+    # Expose ports without publishing them to the host machine
+    # - they’ll only be accessible to linked services.
+    #expose:
+    #  - "8080"
 
+    #-------------------------------------------------------------------------#
     # Either specify both ports (HOST:CONTAINER), or just the container port (a random host port will be chosen).
     ports:
       - "8080:8080"
 
+    #-------------------------------------------------------------------------#
     networks:
       - cloud-config-net
 
+    #-------------------------------------------------------------------------#
     # depends_on will not wait for 'configserver' to be “ready” before starting 'microservicesclient'
     # - only until they have been started.
     depends_on:
       - configserver
 
+    #-------------------------------------------------------------------------#
     extra_hosts:
       - "configserver:172.42.0.2"
 #      - "configserver.baselogic.io:172.42.0.2"
 
+    #-------------------------------------------------------------------------#
     links:
       - configserver
 
+    #-------------------------------------------------------------------------#
     # docker stack deploy
     deploy:
       mode: replicated
@@ -93,11 +113,13 @@ services:
       restart_policy:
         condition: on-failure
 
+    #-------------------------------------------------------------------------#
     environment:
       - SPRING_PROFILES_ACTIVE=default
       - CLOUD_CONFIG_CLIENT_FAILFAST=true
       - CLOUD_CONFIG_URI=http://configserver:8888
 
+    #-------------------------------------------------------------------------#
     # Health Checks
     # docker inspect --format "{{json .State.Health.Status }}" microservicesclient
     healthcheck:
@@ -107,7 +129,10 @@ services:
       start_period: 10s
       timeout: 2s
 
+
 ##---------------------------------------------------------------------------##
+## Other Settings
+##-------------------------------------------------------------------------##
 
 networks:
     cloud-config-net:
@@ -122,4 +147,6 @@ networks:
 
 
 
+##---------------------------------------------------------------------------##
+## END
 ##---------------------------------------------------------------------------##
