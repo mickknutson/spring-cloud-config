@@ -13,7 +13,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
 
-        // Allow AJAX preflight requests via HttpMethod.OPTIONS to be made without
+        // Note: Need to disable this in order to Encypt/Decrypt values:
+        http.csrf().disable();
+
+        // Note: Allow AJAX pre-flight requests via HttpMethod.OPTIONS to be made without
         http.authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
     }

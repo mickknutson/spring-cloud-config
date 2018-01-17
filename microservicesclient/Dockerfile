@@ -10,6 +10,7 @@ FROM openjdk:8-jre-alpine
 MAINTAINER Mick Knutson <mknutson@baselogic.io>
 
 LABEL DESCRIPTION="This container is a Spring Cloud Configuration Client"
+#USER nobody
 
 ##---------------------------------------------------------------------------##
 ## ARG's
@@ -28,13 +29,15 @@ ARG NOTE_CMD="# NOTE: CMD is run when building the container NOT when creating t
 ENV PORT=8080 \
     SPRING_OUTPUT_ANSI_ENABLED="ALWAYS" \
     JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap" \
+#    CLOUD_CONFIG_SERVER="http://0.0.0.0:8888" \
+#    HEALTHCHECK_URI=http://0.0.0.0:8080/health \
     USERNAME="spring" \
     USER_ID="1000"
 
 
 
 ##---------------------------------------------------------------------------##
-# Set the WORKDIR. All following commands will be run in this directory.
+# NOTE: Set the WORKDIR. All following commands will be run in this directory.
 WORKDIR ${APPLICATION_PATH}
 
 ##---------------------------------------------------------------------------##
@@ -56,7 +59,7 @@ ENV APK_DEL="curl httpie"
 
 
 ##---------------------------------------------------------------------------##
-# Clean up files not needed for running the container:
+# NOTE: Clean up files not needed for running the container:
 #RUN rm -rf \
 #      /usr/share/man/* \
 #      /usr/includes/* \
@@ -81,7 +84,7 @@ RUN adduser -H -D ${USERNAME} -u ${USER_ID} && \
     chown ${USERNAME}:${USERNAME} -R ${APPLICATION_PATH}/
 
 ##---------------------------------------------------------------------------##
-# We should not run the application as root !
+# NOTE: We should not run the application as root !
 #USER spring
 USER ${USERNAME}
 
@@ -99,6 +102,7 @@ EXPOSE $PORT
 
 
 ##---------------------------------------------------------------------------##
+# NOTE: Entry Points:
 # Entry Point Script:
 #ENTRYPOINT ./client-entrypoint.sh
 
@@ -106,11 +110,12 @@ EXPOSE $PORT
 ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar ./application-exec.jar
 
 # Application Executable Entry Point separate commands:
-#ENTRYPOINT ["/usr/bin/java"]
-#CMD ["-Djava.security.egd=file:/dev/./urandom", "-jar", "./application-exec.jar"]
+#ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "./application-exec.jar"]
 
 ##---------------------------------------------------------------------------##
-## HEALTHCHECK's
+# NOTE: Container HEALTHCHECK's
+#
+# To verify status:
 # http://container:port/health --> JSON happy or not
 # docker inspect --format "{{json .State.Health.Status }}" microservicesclient
 

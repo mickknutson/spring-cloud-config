@@ -7,7 +7,28 @@ server:
   port: ${CONFIG_SERVER_EXPOSE:8888}
 
 ##---------------------------------------------------------------------------##
-# Config Repo:
+# Note: Show sensitive information for endpoints:
+endpoints:
+  sensitive: true
+
+##---------------------------------------------------------------------------##
+# Note: Security for endpoints:
+management:
+  security:
+    enabled: false
+
+##---------------------------------------------------------------------------##
+# Note: Enable BASIC Authentication:
+security:
+  basic:
+    enabled: true
+  user:
+    name: ${CLOUD_CONFIG_USERNAME:user1}
+    password: ${CLOUD_CONFIG_PASSWORD:changeme}
+
+
+##---------------------------------------------------------------------------##
+# Note: Config Repo:
 spring:
   cloud:
     config:
@@ -32,23 +53,10 @@ spring:
               profiles: dev
 #              label: HOTFIX
 
+
 ##---------------------------------------------------------------------------##
-# Show sensitive information for endpoints:
-endpoints:
-  sensitive: true
-
-# Security for endpoints:
-management:
-  security:
-    enabled: false
-
-# Enable BASIC Authentication:
-security:
-  basic:
-    enabled: true
-  user:
-    name: ${CLOUD_CONFIG_USERNAME:user1}
-    password: ${CLOUD_CONFIG_PASSWORD:changeme}
+# Note: Disable server side decryption:
+#spring.cloud.config.server.encrypt.enabled: false
 
 
 ##---------------------------------------------------------------------------##
@@ -72,7 +80,7 @@ server:
     keyStoreType: PKCS12
     keyAlias: cloudconfigclient
     protocol: TLS
-    trustStore: "classpath:keys/cloudconfig.truststore"
+    trustStore: "classpath:keys/cloudconfig_clientauth.truststore"
     trustStorePassword: changeit
 
 

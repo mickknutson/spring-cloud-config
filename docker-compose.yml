@@ -21,13 +21,13 @@ services:
 ##---------------------------------------------------------------------------##
 
   ##-------------------------------------------------------------------------##
-  # Config Server
+  ## Note: Config Server
   ##-------------------------------------------------------------------------##
   configserver:
     container_name: configserver
 
     #-------------------------------------------------------------------------#
-    # Does the build actually create the image?
+    # Note: Does the build actually create the image?
     build:
       context: ./configserver
       dockerfile: Dockerfile
@@ -37,100 +37,105 @@ services:
 #     - "$HOME/.docker/env/configserver.${APP_ENV}.env"
 
     #-------------------------------------------------------------------------#
-    # replace username/repo:tag with your name and image details
+    # Note: replace username/repo:tag with your name and image details
     image: mickknutson/configserver:latest
 
     #-------------------------------------------------------------------------#
-    # Expose ports without publishing them to the host machine
+    # Note: Expose ports without publishing them to the host machine
     # - they’ll only be accessible to linked services.
     expose:
       - 8888
 #      - 8443
 
     #-------------------------------------------------------------------------#
-    # Either specify both ports (HOST:CONTAINER), or just the container port (a random host port will be chosen).
+    # Note: Either specify both ports (HOST:CONTAINER), or just the container port (a random host port will be chosen).
     ports:
       - "8888:8888"
 #      - "8443:8443"
 
     #-------------------------------------------------------------------------#
+    # Note: Configure our custom network
     networks:
       cloud-config-net:
+        # misc: This will set the host config to a hard-coded IP address
 #        ipv4_address: 172.42.0.2
 
     #-------------------------------------------------------------------------#
+    # Note: Setup container volume
     volumes:
       - "$HOME/microservices_config_repo:/app/microservices_config_repo"
 
     #-------------------------------------------------------------------------#
+    # Note: Environment variables to set / override in Dockerfile
     environment:
       - CLOUD_CONFIG_REPO=file:////app/microservices_config_repo
       - SPRING_PROFILES_ACTIVE=dev
-#      - SPRING_PROFILES_ACTIVE=TLS
       - HEALTHCHECK_URI=http://configserver.baselogic.io:8888/health
-#      - HEALTHCHECK_URI=https://configserver.baselogic.io:8443/health
 
 
     #-------------------------------------------------------------------------#
-    # Health Checks
+    # Note: Container Health Checks
     # docker inspect --format "{{json .State.Health.Status }}" configserver
     healthcheck:
       test: ["CMD", "curl", "-f", "http://0.0.0.0:8888/health"]
-#      test: ["CMD", "curl", "-f", "https://0.0.0.0:8443/health"]
       interval: 5s
       retries: 5
       start_period: 10s
       timeout: 2s
 
     #-------------------------------------------------------------------------#
+    # Note: Restart Policy
     restart: always
 
 
   ##-------------------------------------------------------------------------##
-  # Microservices Client
+  ## Note: Microservices Client
   ##-------------------------------------------------------------------------##
   microservicesclient:
     container_name: microservicesclient
 
     #-------------------------------------------------------------------------#
+    # Note: Does the build actually create the image?
     build:
       context: ./microservicesclient
       dockerfile: Dockerfile
     image: mickknutson/microservicesclient:latest
 
     #-------------------------------------------------------------------------#
-    # Expose ports without publishing them to the host machine
+    # Note: Expose ports without publishing them to the host machine
     # - they’ll only be accessible to linked services.
     #expose:
     #  - "8080"
 
     #-------------------------------------------------------------------------#
-    # Either specify both ports (HOST:CONTAINER), or just the container port (a random host port will be chosen).
+    # Note: Either specify both ports (HOST:CONTAINER), or just the container port (a random host port will be chosen).
     ports:
       - "8080:8080"
 
     #-------------------------------------------------------------------------#
+    # Note: Container Links
     links:
 #      - configserver
       - configserver:configserver.baselogic.io
 
     #-------------------------------------------------------------------------#
+    # Note: Configure our custom network
     networks:
       - cloud-config-net
 
     #-------------------------------------------------------------------------#
-    # depends_on will not wait for 'configserver' to be “ready” before starting 'microservicesclient'
+    # Note: depends_on will not wait for 'configserver' to be “ready” before starting 'microservicesclient'
     # - only until they have been started.
     depends_on:
       - configserver
 
     #-------------------------------------------------------------------------#
+    # Note: Environment variables to set / override in Dockerfile
     environment:
       - SPRING_PROFILES_ACTIVE=default
       - CLOUD_CONFIG_CLIENT_FAILFAST=true
 #      - CLOUD_CONFIG_URI=http://configserver:8888
       - CLOUD_CONFIG_URI=http://configserver.baselogic.io:8888
-#      - CLOUD_CONFIG_URI=https://configserver.baselogic.io:8443
       - HEALTHCHECK_URI=http://0.0.0.0:8080/health
 
 #      - javax.net.ssl.trustStore=/Users/mickknutson/keys/cloudconfig_clientauth.p12
@@ -138,7 +143,7 @@ services:
 
 
     #-------------------------------------------------------------------------#
-    # Health Checks
+    # Note: Container Health Checks
     # docker inspect --format "{{json .State.Health.Status }}" microservicesclient
     healthcheck:
       test: ["CMD", "curl", "-f", "http://0.0.0.0:8080/health"]
@@ -148,19 +153,23 @@ services:
       timeout: 2s
 
     #-------------------------------------------------------------------------#
+    # Note: Restart Policy
     restart: on-failure
 
 
 ##---------------------------------------------------------------------------##
-## Other Settings
+## Note: Other Settings
 ##---------------------------------------------------------------------------##
 
+##---------------------------------------------------------------------------##
+## Network configuration:
 networks:
     cloud-config-net:
       external:
         name: cloud-config-net
 
 ##---------------------------------------------------------------------------##
+# Volume configuration:
 #volumes:
 #    var_logs:
 #        external: true

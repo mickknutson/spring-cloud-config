@@ -4,10 +4,12 @@
 #------------------------------------------------------------------------------#
 debug: false
 
+##---------------------------------------------------------------------------##
 # Disable security for Actuator endpoints:
 # otherwise, you will see a 401 UnAuthorized Error
 management.security.enabled: true
 
+##---------------------------------------------------------------------------##
 # Enable BASIC Authentication for Service Endpoints
 security.basic.enabled: true
 
@@ -16,6 +18,13 @@ security:
   user:
     name: ${CLIENT_USERNAME:user2}
     password: ${CLIENT_PASSWORD:changeme}
+
+
+##---------------------------------------------------------------------------##
+# Note: Set a Symetric Key for encryptions and decryption:
+encrypt:
+  key: changeThisKey
+
 
 ##---------------------------------------------------------------------------##
 ##---------------------------------------------------------------------------##

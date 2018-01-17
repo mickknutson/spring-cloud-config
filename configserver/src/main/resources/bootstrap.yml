@@ -1,0 +1,31 @@
+#------------------------------------------------------------------------------#
+# Bootstrap YAML #
+# inside ./src/main/resources/bootstrap.yml
+#------------------------------------------------------------------------------#
+
+##---------------------------------------------------------------------------##
+# Note: Set a Symetric Key for encryptions and decryption:
+encrypt:
+  key: changeThisKey
+
+
+# Note: Set a Symetric Keystore for encryptions and decryption:
+# Note: Set a Symetric Keystore for encryptions and decryption:
+encrypt:
+  keyStore:
+    location: "classpath:keys/cloudconfig_clientauth.p12"
+    password: changeit
+    alias: cloudconfigclient
+    secret: changeit
+
+#encrypt:keyStore.location: "classpath:keys/cloudconfig_clientauth.p12"
+#encrypt.keyStore.password: changeit
+#encrypt.keyStore.alias: cloudconfigclient
+#encrypt.keyStore.secret: changeit
+
+##---------------------------------------------------------------------------##
+# Note: Disable server side decryption:
+#spring.cloud.config.server.encrypt.enabled: false
+
+##---------------------------------------------------------------------------##
+##---------------------------------------------------------------------------##

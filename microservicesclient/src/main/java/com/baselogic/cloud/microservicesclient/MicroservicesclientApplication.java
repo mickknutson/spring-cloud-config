@@ -21,9 +21,10 @@ public class MicroservicesclientApplication {
         System.setProperty("javax.net.ssl.keyStore",  "/Users/mickknutson/keys/cloudconfig_clientauth.p12");
         System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
 
-        // Java 8:
+        // Java 8 syntax:
         HttpsURLConnection.setDefaultHostnameVerifier ((hostname, session) -> true);
 
+        // Java 7 syntax:
 //        final HostnameVerifier defaultHostnameVerifier = javax.net.ssl.HttpsURLConnection.getDefaultHostnameVerifier ();
 //        final HostnameVerifier localhostAcceptedHostnameVerifier = new javax.net.ssl.HostnameVerifier () {
 //
@@ -41,4 +42,5 @@ public class MicroservicesclientApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MicroservicesclientApplication.class, args);
 	}
-}
+
+} // The end...

@@ -37,7 +37,7 @@ ENV PORT=8888 \
 
 
 ##---------------------------------------------------------------------------##
-# Set the WORKDIR. All following commands will be run in this directory.
+# NOTE: Set the WORKDIR. All following commands will be run in this directory.
 WORKDIR ${APPLICATION_PATH}
 
 ##---------------------------------------------------------------------------##
@@ -59,7 +59,7 @@ ENV APK_DEL="curl httpie"
 
 
 ##---------------------------------------------------------------------------##
-# Clean up files not needed for running the container:
+# NOTE: Clean up files not needed for running the container:
 #RUN rm -rf \
 #      /usr/share/man/* \
 #      /usr/includes/* \
@@ -84,7 +84,7 @@ RUN adduser -H -D ${USERNAME} -u ${USER_ID} && \
     chown ${USERNAME}:${USERNAME} -R ${APPLICATION_PATH}/
 
 ##---------------------------------------------------------------------------##
-# We should not run the application as root !
+# NOTE: We should not run the application as root !
 #USER spring
 USER ${USERNAME}
 
@@ -102,6 +102,7 @@ EXPOSE $PORT
 
 
 ##---------------------------------------------------------------------------##
+# NOTE: Entry Points:
 # Entry Point Script:
 #ENTRYPOINT ./entrypoint.sh
 
@@ -109,11 +110,12 @@ EXPOSE $PORT
 ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar ./application-exec.jar
 
 # Application Executable Entry Point separate commands:
-#ENTRYPOINT ["/usr/bin/java"]
-#CMD ["-Djava.security.egd=file:/dev/./urandom", "-jar", "./application-exec.jar"]
+#ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "./application-exec.jar"]
 
 ##---------------------------------------------------------------------------##
-## HEALTHCHECK's
+# NOTE: Container HEALTHCHECK's
+#
+# To verify status:
 # http://container:port/health --> JSON happy or not
 # docker inspect --format "{{json .State.Health.Status }}" microservicesclient
 
