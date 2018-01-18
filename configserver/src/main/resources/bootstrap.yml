@@ -4,14 +4,14 @@
 #------------------------------------------------------------------------------#
 
 ##---------------------------------------------------------------------------##
-# Note: Set a Symetric Key for encryptions and decryption:
+
+# Note: Set a Symetric Keystore for encryptions and decryption:
 encrypt:
+
+  # Note: Set a Symetric Key for encryptions and decryption:
   key: changeThisKey
 
-
-# Note: Set a Symetric Keystore for encryptions and decryption:
-# Note: Set a Symetric Keystore for encryptions and decryption:
-encrypt:
+  # Note: Set a Symetric Keystore for encryptions and decryption:
   keyStore:
     location: "classpath:keys/cloudconfig_clientauth.p12"
     password: changeit
