@@ -64,6 +64,7 @@ task pmdReport(group: "verification",
 project.pmd.ignoreFailures = true
 
 check {
+    dependsOn += ["pmdReport"]
 //    dependsOn += ["pmd", "pmdReport"]
 //    dependsOn += ["pmd"]
 }

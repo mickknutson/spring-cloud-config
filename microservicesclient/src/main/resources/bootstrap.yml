@@ -19,7 +19,7 @@ spring:
 ##---------------------------------------------------------------------------##
   cloud:
     config:
-      uri: ${CLOUD_CONFIG_URI:http://0.0.0.0:8888}
+      uri: ${CLOUD_CONFIG_URI:http://localhost:8888}
 
       username: ${CLOUD_CONFIG_USERNAME:user1}
       password: ${CLOUD_CONFIG_PASSWORD:changeme}

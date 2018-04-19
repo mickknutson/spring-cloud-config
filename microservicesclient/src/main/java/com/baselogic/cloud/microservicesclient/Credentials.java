@@ -48,8 +48,8 @@ public class Credentials {
 
     @Override
     public String toString() {
-        return "Api Gateway Credentials [provider=" + provider + ", username=" + username + ", password="
-                + password + ", clients=" + clients + "]";
+        return "Api Gateway Credentials [provider=" + this.getProvider() + ", username=" + this.getUsername() + ", password="
+                + this.getPassword() + ", clients=" + this.getClients() + "]";
     }
 
-}
+} // The End...

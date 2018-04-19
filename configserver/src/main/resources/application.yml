@@ -35,7 +35,9 @@ spring:
       server:
         git:
           # NOTE: Look for System variable 'CLOUD_CONFIG_REPO' or (:) use default
+#          uri: file:///${HOME}/microservices_config_repo
           uri: ${CLOUD_CONFIG_REPO:file:///${HOME}/microservices_config_repo}
+          clone-on-start: true
 
           # NOTE: Could also have remote repositories with credentials:
 #          uri: ${CLOUD_CONFIG_REPO:https://github.com/mickknutson/spring-cloud-config-repo}

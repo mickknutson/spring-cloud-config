@@ -1,13 +1,12 @@
 ##---------------------------------------------------------------------------##
-## Taken from:
-## https://docs.docker.com/compose/compose-file/
-## https://docs.docker.com/compose/compose-file/#compose-file-structure-and-examples
-##
-# Possible solution https://stackoverflow.com/questions/45271645/docker-compose-and-spring-boot-config-server
 #
-# https://docs.docker.com/compose/compose-file/
+# https://blog.alexellis.io/docker-stacks-attachable-networks/
 #
 # https://docs.docker.com/edge/engine/reference/commandline/stack/
+#
+# https://docs.docker.com/docker-cloud/apps/stacks/
+#
+# https://github.com/dockersamples/example-voting-app/blob/master/docker-stack.yml
 #
 ##---------------------------------------------------------------------------##
 version: "3.4"

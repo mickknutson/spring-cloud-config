@@ -9,7 +9,7 @@ FROM openjdk:8-jre-alpine
 
 MAINTAINER Mick Knutson <mknutson@baselogic.io>
 
-LABEL DESCRIPTION="This container is a Microservices Client leveraging Spring Cloud Configuration Server"
+LABEL DESCRIPTION="This container is a Spring Cloud Configuration Server"
 #USER nobody
 
 ##---------------------------------------------------------------------------##
@@ -18,22 +18,20 @@ LABEL DESCRIPTION="This container is a Microservices Client leveraging Spring Cl
 
 ARG APPLICATION_PATH=/app
 
-ARG build_number=1.0-SNAPSHOT
-
 ARG NOTE_RUN="# NOTE: RUN is run when building the image NOT when running the container"
+ARG NOTE_CMD="# NOTE: CMD is run when building the container NOT when creating the image"
 
 
 ##---------------------------------------------------------------------------##
 ## ENV Commands
 # NOTE: ENV's are available in image create and running a container
 # Can override these values:
-ENV PORT=8080 \
-    SPRING_OUTPUT_ANSI_ENABLED="ALWAYS" \
-    JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap" \
-    CLOUD_CONFIG_SERVER="http://0.0.0.0:8888" \
-#    HEALTHCHECK_URI=http://0.0.0.0:8080/health \
-    USERNAME="spring" \
-    USER_ID="1000"
+ENV PORT=8888 \
+ENV SPRING_OUTPUT_ANSI_ENABLED="ALWAYS" \
+ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap" \
+ENV CLOUD_CONFIG_REPO="file:////app/microservices_config_repo" \
+ENV USERNAME="spring" \
+ENV USER_ID="1000"
 
 
 
@@ -42,72 +40,60 @@ ENV PORT=8080 \
 WORKDIR ${APPLICATION_PATH}
 
 ##---------------------------------------------------------------------------##
-## Copy all shell scripts:
+## Copy all shell scripts
 COPY ./*entrypoint.sh ${APPLICATION_PATH}/
 
-## Copy Binary Files:
 ADD ./build/libs/*-exec.jar ${APPLICATION_PATH}/application-exec.jar
-
 
 ##---------------------------------------------------------------------------##
 ENV APK_ADD="bash curl httpie"
-#ENV APK_ADD="bash curl busybox httpie"
 ENV APK_DEL="curl httpie"
-#ENV APK_DEL="curl busybox httpie"
 
 # NOTE: RUN is run when building the image NOT when running the container:
-#RUN apk update && \
-#    apk upgrade && \
-#    apk add --no-cache ${APK_ADD}
+RUN apk update
+RUN apk upgrade
+RUN apk add --no-cache ${APK_ADD}
 
 
 ##---------------------------------------------------------------------------##
 # NOTE: Clean up files not needed for running the container:
-#RUN rm -rf \
-#      /usr/share/man/* \
-#      /usr/includes/* \
-#      /var/cache/apk/* \
-#      /root/.npm/* \
-#      /usr/lib/node_modules/npm/man/* \
-#      /usr/lib/node_modules/npm/doc/* \
-#      /usr/lib/node_modules/npm/html/* \
-#      /usr/lib/node_modules/npm/scripts/*
+RUN rm -rf
+RUN /usr/share/man/*
+RUN /usr/includes/*
+RUN /var/cache/apk/*
+RUN /root/.npm/*
+RUN /usr/lib/node_modules/npm/man/*
+RUN /usr/lib/node_modules/npm/doc/*
+RUN /usr/lib/node_modules/npm/html/*
+RUN /usr/lib/node_modules/npm/scripts/*
 
 #RUN apk del ${APK_DEL}
 
-## Option to externalize the OS commands:
-#COPY ./*container-start.sh ${APPLICATION_PATH}/
-#RUN chmod -v +x ./container-start.sh && \
-#    ./container-start.sh && \
-#    rm ./container-start.sh
 
 # Now create a new USER and make them the owner of our application files:
-RUN adduser -H -D ${USERNAME} -u ${USER_ID} && \
-    chown ${USERNAME}:${USERNAME} -R ${APPLICATION_PATH}/
+RUN adduser -H -D ${USERNAME} -u ${USER_ID}
+
+RUN chown ${USERNAME}:${USERNAME} -R ${APPLICATION_PATH}/
 
 ##---------------------------------------------------------------------------##
 # NOTE: We should not run the application as root !
-#USER spring
 USER ${USERNAME}
 
 ##---------------------------------------------------------------------------##
 # NOTE: RUN is run when building the image NOT when running the container:
-# NOTE: CMD is run when building the container NOT when creating the image:
 RUN echo "$NOTE_RUN"
 
 
 ##---------------------------------------------------------------------------##
-# Note: Which ports to expose to the outside host
-# Can be enabled and/or overridden with -e, -p, docker-compose
-# -e [HOST:CONTAINER]
+# Which ports to expose to the outside host
 # -p [HOST:CONTAINER]
-#EXPOSE $PORT
+EXPOSE $PORT
 
 
 ##---------------------------------------------------------------------------##
 # NOTE: Entry Points:
 # Entry Point Script:
-#ENTRYPOINT ./client-entrypoint.sh
+ENTRYPOINT ./entrypoint.sh
 
 # Application Executable Entry Point:
 ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar ./application-exec.jar
@@ -124,7 +110,7 @@ ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar ./application-exec.
 
 ARG HEALTHCHECK_URI=http://0.0.0.0:$PORT/health
 
-# Spring Boot Actuator:
+# Spring Boot Actuator: TODO: Revisit syntax:
 HEALTHCHECK --interval=5m --timeout=2s --retries=3 CMD curl -v --silent $HEALTHCHECK_URI 2>&1
 
 ##---------------------------------------------------------------------------##

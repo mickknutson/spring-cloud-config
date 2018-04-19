@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * Configuration for YML should be:
+ * Configuration for YAML should be:
  *
  * <pre>
  * config.client:
@@ -40,7 +40,10 @@ public class MicroservicesClientProperties {
 
     @Override
 	public String toString() {
-		return "MicroservicesClientProperties [message=" + message + ", credentials=\n" + credentials + "]";
+		return "MicroservicesClientProperties [message="
+                + this.getMessage()
+                + ", credentials=\n"
+                + this.getCredentials() + "]";
 	}
 
-}
+} // The End...

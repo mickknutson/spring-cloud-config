@@ -18,8 +18,9 @@ LABEL DESCRIPTION="This container is a Spring Cloud Configuration Server"
 
 ARG APPLICATION_PATH=/app
 
+ARG build_number=1.0-SNAPSHOT
+
 ARG NOTE_RUN="# NOTE: RUN is run when building the image NOT when running the container"
-ARG NOTE_CMD="# NOTE: CMD is run when building the container NOT when creating the image"
 
 
 ##---------------------------------------------------------------------------##
@@ -40,17 +41,48 @@ ENV PORT=8888 \
 # NOTE: Set the WORKDIR. All following commands will be run in this directory.
 WORKDIR ${APPLICATION_PATH}
 
+
 ##---------------------------------------------------------------------------##
-## Copy all shell scripts
+# NOTE: Set the VOLUME.
+#VOLUME "$HOME"/microservices_config_repo:/app/microservices_config_repo
+
+
+##---------------------------------------------------------------------------##
+## Copy all shell scripts:
 COPY ./*entrypoint.sh ${APPLICATION_PATH}/
 
+## Copy Binary Files:
 ADD ./build/libs/*-exec.jar ${APPLICATION_PATH}/application-exec.jar
+
+#RUN ls -la
+#RUN cd ..
+#RUN ls -la
+
 
 ##---------------------------------------------------------------------------##
 ENV APK_ADD="bash curl httpie"
 #ENV APK_ADD="bash curl busybox httpie"
 ENV APK_DEL="curl httpie"
 #ENV APK_DEL="curl busybox httpie"
+
+
+# NOTE: RUN is run when building the image NOT when running the container:
+#RUN apk update
+#RUN apk upgrade
+#RUN apk add --no-cache ${APK_ADD}
+
+
+##---------------------------------------------------------------------------##
+# NOTE: Clean up files not needed for running the container:
+
+#RUN rm -rf /usr/share/man/*
+#RUN rm -rf /usr/includes/*
+#RUN rm -rf /var/cache/apk/*
+#RUN rm -rf /root/.npm/*
+#RUN rm -rf /usr/lib/node_modules/npm/man/*
+#RUN rm -rf /usr/lib/node_modules/npm/doc/*
+#RUN rm -rf /usr/lib/node_modules/npm/html/*
+#RUN rm -rf /usr/lib/node_modules/npm/scripts/*
 
 # NOTE: RUN is run when building the image NOT when running the container:
 #RUN apk update && \
@@ -71,10 +103,10 @@ ENV APK_DEL="curl httpie"
 #      /usr/lib/node_modules/npm/scripts/*
 
 #RUN apk del ${APK_DEL}
-#CMD apk del ${APK_DEL}
 
 ## Option to externalize the OS commands:
 COPY ./*container-start.sh ${APPLICATION_PATH}/
+
 RUN chmod -v +x ./container-start.sh && \
     ./container-start.sh && \
     rm ./container-start.sh
@@ -90,27 +122,32 @@ USER ${USERNAME}
 
 ##---------------------------------------------------------------------------##
 # NOTE: RUN is run when building the image NOT when running the container:
-# NOTE: CMD is run when building the container NOT when creating the image:
+# NOTE: CMD is run when starting the container NOT when creating the image:
 RUN echo "$NOTE_RUN"
-CMD echo "$NOTE_CMD"
+#CMD echo "$NOTE_RUN"
 
 
 ##---------------------------------------------------------------------------##
-# Which ports to expose to the outside host
+# Note: Which ports to expose to the outside host
+# Can be enabled and/or overridden with -e, -p, docker-compose
+# -e [HOST:CONTAINER]
 # -p [HOST:CONTAINER]
-EXPOSE $PORT
+#EXPOSE $PORT
 
 
 ##---------------------------------------------------------------------------##
 # NOTE: Entry Points:
 # Entry Point Script:
-#ENTRYPOINT ./entrypoint.sh
+ENTRYPOINT ./entrypoint.sh
 
 # Application Executable Entry Point:
 ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar ./application-exec.jar
 
 # Application Executable Entry Point separate commands:
 #ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "./application-exec.jar"]
+#CMD java -Djava.security.egd=file:/dev/./urandom -jar ./application-exec.jar
+
+
 
 ##---------------------------------------------------------------------------##
 # NOTE: Container HEALTHCHECK's
@@ -119,13 +156,10 @@ ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar ./application-exec.
 # http://container:port/health --> JSON happy or not
 # docker inspect --format "{{json .State.Health.Status }}" microservicesclient
 
-ARG HEALTHCHECK_URI=http://0.0.0.0:$PORT/health
-
-# TODO: Could use ARG's for retry parameters:
-#HEALTHCHECK --interval=5m --timeout=2s --retries=3 CMD curl -f $HEALTHCHECK_URI
+ARG HEALTHCHECK_URI=http://localhost:$PORT/health
 
 # Spring Boot Actuator: TODO: Revisit syntax:
-HEALTHCHECK --interval=5m --timeout=2s --retries=3 CMD curl -v --silent HEALTHCHECK_URI 2>&1
+HEALTHCHECK --interval=5m --timeout=2s --retries=3 CMD curl -v --silent $HEALTHCHECK_URI 2>&1
 
 ##---------------------------------------------------------------------------##
 ##---------------------------------------------------------------------------##

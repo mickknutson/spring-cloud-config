@@ -68,7 +68,7 @@ public class CustomTomcatEmbeddedServletContainerFactory {
      * FIXME: Does not redirect !
      * @return
      */
-    private Connector tlsConnector() {
+    /*private Connector tlsConnector() {
         Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
 
         Http11NioProtocol protocol = (Http11NioProtocol) connector.getProtocolHandler();
@@ -94,7 +94,7 @@ public class CustomTomcatEmbeddedServletContainerFactory {
             throw new IllegalStateException("can't access keystore: [" + "keystore"
                     + "] or truststore: [" + "keystore" + "]", ex);
         }
-    }
+    }*/
 
 
 } // The End...

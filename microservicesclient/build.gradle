@@ -10,14 +10,17 @@ buildscript {
 
     repositories {
         jcenter()
-        maven { url("https://plugins.gradle.org/m2/") }
+//        maven { url("https://plugins.gradle.org/m2/") }
     }
     dependencies {
         classpath ("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath ("io.spring.gradle:dependency-management-plugin:${dependencyManagementPluginVersion}")
+
 //        classpath ("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:${sonarqubeGradlePluginVersion}")
     }
 }
+
+apply plugin: "application"
 
 apply plugin: "java"
 apply plugin: "eclipse"
@@ -61,9 +64,9 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-logging")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-actuator-docs")
-    runtime("org.springframework.boot:spring-boot-devtools")
-
     compile("org.springframework.boot:spring-boot-configuration-processor")
+
+    runtime("org.springframework.boot:spring-boot-devtools")
 
 
     // Testing
@@ -81,12 +84,12 @@ dependencyManagement {
 //---------------------------------------------------------------------------//
 
 jar {
-    baseName = "microservicesclient"
+    baseName = "configserver"
     version =  "${this.version}"
 }
 
 task("execJar", type:Jar, dependsOn: "jar") {
-    baseName = "microservicesclient"
+    baseName = "configserver"
     version =  "${this.version}"
     classifier = "exec"
     from sourceSets.main.output

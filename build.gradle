@@ -13,7 +13,6 @@ buildscript {
         maven { url("https://plugins.gradle.org/m2/") }
     }
     dependencies {
-        classpath ("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath ("io.spring.gradle:dependency-management-plugin:${dependencyManagementPluginVersion}")
         classpath ("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:${sonarqubeGradlePluginVersion}")
 //        classpath ("com.bmuschko:gradle-docker-plugin:latest.release")
@@ -62,10 +61,30 @@ subprojects {
     check.dependsOn projectReport
 
     // Utils:
-    apply from: "${rootDir}/config/utils.gradle"
+        apply from: "${rootDir}/config/utils.gradle"
 
     // Code Coverage:
-    apply from: "${rootDir}/config/codecoverage.gradle"
+        apply from: "${rootDir}/config/codecoverage.gradle"
+
+    // https://github.com/kt3k/coveralls-gradle-plugin
+    //    apply plugin: "com.github.kt3k.coveralls"
+
+        apply from: "${rootDir}/config/findbugs.gradle"
+
+    // PMD:
+        apply from: "${rootDir}/config/pmd.gradle"
+
+    // CPD:
+//        apply from: "${rootDir}/config/cpd.gradle"
+
+    // CheckStyle:
+    //apply from: "${rootDir}/config/checkstyle.gradle"
+
+    // lintGradle:
+    //    apply from: "${rootDir}/config/lint.gradle"
+
+    // Build Scan:
+    //    apply from: "${rootDir}/config/buildscan.gradle"
 
     //-----------------------------------------------------------------------//
     dependencyManagement {
@@ -87,12 +106,26 @@ subprojects {
      * To view dependency tree in gradle:
      *
      * ./gradlew dependencies
+     * gradle dependencies
      */
     dependencies {
 
         //-----------------------------------------------------------------------//
         compile ("org.aspectj:aspectjweaver")
         //-----------------------------------------------------------------------//
+
+        // Tools
+        compile("org.springframework.boot:spring-boot-starter-logging")
+        compile("org.springframework.boot:spring-boot-starter-actuator")
+        compile("org.springframework.boot:spring-boot-actuator-docs")
+        compile("org.springframework.boot:spring-boot-configuration-processor")
+
+        runtime("org.springframework.boot:spring-boot-devtools")
+
+
+        // Testing
+        testCompile("org.springframework.boot:spring-boot-starter-test")
+
     } // dependencies
 
 

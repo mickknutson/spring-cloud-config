@@ -58,7 +58,5 @@ public class CORSFilter extends GenericFilterBean implements Filter {
         chain.doFilter(request, response);
     }
 
-    @Override
-    public void destroy() {}
 
 } // The End...
