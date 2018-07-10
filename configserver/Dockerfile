@@ -138,7 +138,7 @@ RUN echo "$NOTE_RUN"
 ##---------------------------------------------------------------------------##
 # NOTE: Entry Points:
 # Entry Point Script:
-ENTRYPOINT ./entrypoint.sh
+#ENTRYPOINT ./entrypoint.sh
 
 # Application Executable Entry Point:
 ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar ./application-exec.jar

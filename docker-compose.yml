@@ -38,7 +38,7 @@ services:
     # Note: Does the build actually create the image?
     build:
       context: ./configserver
-      # configA.dockerfile
+      #           configA.dockerfile
       dockerfile: Dockerfile
 
       # Set build-time variables for one service:
@@ -64,12 +64,13 @@ services:
     # - they’ll only be accessible to linked services.
     expose:
       - 8888
-#      - 8443
+      - 8443
 
     #-------------------------------------------------------------------------#
     # Note: Either specify both ports (HOST:CONTAINER), or just the container port (a random host port will be chosen).
 #    ports:
 #      - "8888:8888"
+#      - "80:8888"
 #      - 8443:8443
 
     #-------------------------------------------------------------------------#

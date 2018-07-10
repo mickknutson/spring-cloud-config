@@ -122,7 +122,7 @@ ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar ./application-exec.
 # http://container:port/health --> JSON happy or not
 # docker inspect --format "{{json .State.Health.Status }}" microservicesclient
 
-ARG HEALTHCHECK_URI=http://0.0.0.0:$PORT/health
+ARG HEALTHCHECK_URI=http://localhost:$PORT/health
 
 # Spring Boot Actuator:
 HEALTHCHECK --interval=5m --timeout=2s --retries=3 CMD curl -v --silent $HEALTHCHECK_URI 2>&1
