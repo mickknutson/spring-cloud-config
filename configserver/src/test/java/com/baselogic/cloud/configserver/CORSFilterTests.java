@@ -47,9 +47,7 @@ public class CORSFilterTests {
 
 
     //-----------------------------------------------------------------------//
-    @Test
-    public void noop() {
-    }
+
 
     @Test
     public void test_cors__client_default_profile() throws Exception {

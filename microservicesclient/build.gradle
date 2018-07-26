@@ -50,6 +50,7 @@ dependencies {
 
     // Required for Cloud Config Client FailFast retry options
     compile ("org.springframework.retry:spring-retry")
+
     compile ("org.springframework.boot:spring-boot-starter-aop")
 
     // This is a Web Application:
