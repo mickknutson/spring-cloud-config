@@ -23,7 +23,6 @@ buildscript {
 apply plugin: "application"
 
 apply plugin: "java"
-apply plugin: "eclipse"
 apply plugin: "idea"
 apply plugin: "org.springframework.boot"
 
@@ -62,16 +61,16 @@ dependencies {
     testCompile("org.springframework.security:spring-security-test")
 
     // Tools
-    compile("org.springframework.boot:spring-boot-starter-logging")
-    compile("org.springframework.boot:spring-boot-starter-actuator")
-    compile("org.springframework.boot:spring-boot-actuator-docs")
-    compile("org.springframework.boot:spring-boot-configuration-processor")
-
-    runtime("org.springframework.boot:spring-boot-devtools")
+//    compile("org.springframework.boot:spring-boot-starter-logging")
+//    compile("org.springframework.boot:spring-boot-starter-actuator")
+//    compile("org.springframework.boot:spring-boot-actuator-docs")
+//    compile("org.springframework.boot:spring-boot-configuration-processor")
+//
+//    runtime("org.springframework.boot:spring-boot-devtools")
 
 
     // Testing
-    testCompile("org.springframework.boot:spring-boot-starter-test")
+//    testCompile("org.springframework.boot:spring-boot-starter-test")
 
 }
 

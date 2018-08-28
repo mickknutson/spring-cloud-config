@@ -4,7 +4,7 @@ echo "*** NOTE: Executing container-start.sh"
 
 ##---------------------------------------------------------------------------##
 set APK_ADD="bash curl httpie"
-set APK_DEL="curl httpie"
+set APK_DEL="bash curl"
 
 
 ##---------------------------------------------------------------------------##

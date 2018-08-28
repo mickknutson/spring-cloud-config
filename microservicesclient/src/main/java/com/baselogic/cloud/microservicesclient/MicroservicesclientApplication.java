@@ -3,14 +3,23 @@ package com.baselogic.cloud.microservicesclient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
 @SpringBootApplication
+
 @EnableConfigurationProperties({ MicroservicesClientProperties.class })
+
+@EnableCircuitBreaker
+@EnableFeignClients
 public class MicroservicesclientApplication {
 
+
+    // FIXME: Attempting to enable SSL client handshake.
+    // FIXME: Did not work :-(
     static {
 
         System.setProperty("javax.net.debug", "all");

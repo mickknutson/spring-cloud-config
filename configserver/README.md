@@ -66,7 +66,11 @@ Access configuration for microservices-client application for default profile (w
 [http://user1:changemelocalhost:8888/microservices-client/dev/v.3.0](http://user1:changemelocalhost:8888/microservices-client/dev/v.3.0)
 [http://user1:changemelocalhost:8888/microservices-client/dev/HOTFIX](http://user1:changemelocalhost:8888/microservices-client/dev/HOTFIX)
 
+
+
+http -a user1:changeme localhost:8888/microservices-client/
 http -a user1:changeme localhost:8888/microservices-client/dev
+http -a user1:changeme localhost:8888/microservices-client/dev/v.3.0
 http -a user1:changeme localhost:8888/microservices-client/dev/v.3.0
 http -a user1:changeme localhost:8888/microservices-client/dev/HOTFIX
 

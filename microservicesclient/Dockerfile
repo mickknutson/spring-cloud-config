@@ -50,37 +50,15 @@ ADD ./build/libs/*-exec.jar ${APPLICATION_PATH}/application-exec.jar
 
 
 ##---------------------------------------------------------------------------##
-ENV APK_ADD="bash curl httpie"
-#ENV APK_ADD="bash curl busybox httpie"
-ENV APK_DEL="curl httpie"
-#ENV APK_DEL="curl busybox httpie"
+## Option to externalize the OS commands:
+COPY ./*container-start.sh ${APPLICATION_PATH}/
 
-# NOTE: RUN is run when building the image NOT when running the container:
-#RUN apk update && \
-#    apk upgrade && \
-#    apk add --no-cache ${APK_ADD}
+RUN chmod -v +x ./container-start.sh && \
+    ./container-start.sh && \
+    rm ./container-start.sh
 
 
 ##---------------------------------------------------------------------------##
-# NOTE: Clean up files not needed for running the container:
-#RUN rm -rf \
-#      /usr/share/man/* \
-#      /usr/includes/* \
-#      /var/cache/apk/* \
-#      /root/.npm/* \
-#      /usr/lib/node_modules/npm/man/* \
-#      /usr/lib/node_modules/npm/doc/* \
-#      /usr/lib/node_modules/npm/html/* \
-#      /usr/lib/node_modules/npm/scripts/*
-
-#RUN apk del ${APK_DEL}
-
-## Option to externalize the OS commands:
-#COPY ./*container-start.sh ${APPLICATION_PATH}/
-#RUN chmod -v +x ./container-start.sh && \
-#    ./container-start.sh && \
-#    rm ./container-start.sh
-
 # Now create a new USER and make them the owner of our application files:
 RUN adduser -H -D ${USERNAME} -u ${USER_ID} && \
     chown ${USERNAME}:${USERNAME} -R ${APPLICATION_PATH}/
@@ -122,10 +100,18 @@ ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar ./application-exec.
 # http://container:port/health --> JSON happy or not
 # docker inspect --format "{{json .State.Health.Status }}" microservicesclient
 
-ARG HEALTHCHECK_URI=http://localhost:$PORT/health
+ENV HEALTHCHECK_URI=localhost:$PORT/health
 
-# Spring Boot Actuator:
-HEALTHCHECK --interval=5m --timeout=2s --retries=3 CMD curl -v --silent $HEALTHCHECK_URI 2>&1
+# Spring Boot Actuator: TODO: Revisit syntax:
+HEALTHCHECK --interval=10s --timeout=2s --retries=3 \
+    CMD curl -v --silent $HEALTHCHECK_URI 2>&1
+
+#HEALTHCHECK --interval=10s --timeout=3s --retries=3 \
+#    CMD curl -f $HEALTHCHECK_URI || exit 1
+
+#HEALTHCHECK --interval=10s --timeout=3s --retries=3 \
+#    CMD ["http","$HEALTHCHECK_URI"]
+
 
 ##---------------------------------------------------------------------------##
 ##---------------------------------------------------------------------------##
