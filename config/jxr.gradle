@@ -16,8 +16,6 @@
 import net.davidecavestro.gradle.jxr.JxrLog
 import org.apache.maven.jxr.JXR
 
-import java.util.stream.Collectors
-
 buildscript {
     repositories {
         mavenCentral()

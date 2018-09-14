@@ -1,10 +1,9 @@
 package com.baselogic.cloud.service;
 
+import com.baselogic.cloud.domain.User;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.baselogic.cloud.domain.User;
 
 @RestController
 public class UserService {

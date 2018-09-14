@@ -2,9 +2,6 @@ package com.baselogic.cloud.configuration;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-
 /**
  * {@link EnableAutoConfiguration Auto-configuration} for {@link ConfigClientProperties}s.
  * @author mickknutson

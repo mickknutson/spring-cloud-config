@@ -1,5 +1,6 @@
 package com.baselogic.cloud;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.config.server.EnableConfigServer;
@@ -8,8 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Arrays;
-
-import org.springframework.boot.CommandLineRunner;
 
 @SpringBootApplication
 @EnableConfigServer

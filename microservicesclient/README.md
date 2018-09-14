@@ -2,19 +2,23 @@
 
 This readme contains notes on this Config Server
 
-### Distributed configuration with Spring Cloud Config
-[Udemy Course](https://www.udemy.com/distributed-configuration-with-spring-cloud-config)
-
 
 ### Spring Cloud Config Server
 This code has been developed in Maven and Gradle and has a sub-project for each chapter
 
 
-Docker
-------
-Create executable: gradle bootRepackage
+## Docker
 
-Create Image: docker
+### Create Boot executable Jar:
+
+    gradle bootRepackage
+
+### Create Image:
+
+    docker build -t mickknutson/configserver .
+
+
+
 
 
 
