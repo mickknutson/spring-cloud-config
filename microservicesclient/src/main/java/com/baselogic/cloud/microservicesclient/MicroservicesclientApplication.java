@@ -3,7 +3,6 @@ package com.baselogic.cloud.microservicesclient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -11,7 +10,6 @@ import javax.net.ssl.HttpsURLConnection;
 
 @EnableConfigurationProperties({ MicroservicesClientProperties.class })
 
-@EnableCircuitBreaker
 public class MicroservicesclientApplication {
 
 
