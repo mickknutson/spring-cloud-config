@@ -43,7 +43,7 @@ public class CORSWebConfigTests {
     public void noop() {
     }
 
-    @Test
+//    @Test
     public void test_cors__client_default_profile() throws Exception {
         MvcResult result = mvc
                 .perform(get("http://localhost:8888/microservices-client/default"))
